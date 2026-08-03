@@ -125,42 +125,48 @@ export default function MedicosClient({ role }: { role: string }) {
       ) : doctors.length === 0 ? (
         <p className="text-gray-400 text-sm">No hay médicos registrados.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {doctors.map((doc) => {
             const color = categoriaColor(doc.categoria);
             return (
-            <div key={doc.id} className="card card-interactive p-4 flex flex-col gap-3">
+            <div key={doc.id} className="card card-interactive p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 min-w-0">
               <div className="flex items-start justify-between gap-2">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 sm:gap-3 min-w-0">
                   <span
-                    className="icon-chip"
-                    style={{ background: color.bg }}
+                    className="icon-chip shrink-0"
+                    style={{ background: color.bg, width: "2rem", height: "2rem", fontSize: "1rem" }}
                   >
                     {categoriaIcon(doc.categoria)}
                   </span>
-                  <div>
-                    <p className="font-medium text-brand-black">{doc.nombre}</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-brand-black text-sm sm:text-base truncate">{doc.nombre}</p>
                     {doc.especialidad && (
-                      <p className="text-xs text-gray-500">{doc.especialidad}</p>
+                      <p className="text-xs text-gray-500 truncate">{doc.especialidad}</p>
                     )}
                   </div>
                 </div>
                 <span
-                  className="text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap"
+                  className="hidden sm:inline text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap"
                   style={{ background: color.bg, color: color.text }}
                 >
                   {categoriaLabel(doc.categoria)}
                 </span>
               </div>
-              <p className="text-sm text-gray-600">{doc.perteneceA}</p>
+              <span
+                className="sm:hidden text-xs px-2 py-0.5 rounded-full font-semibold self-start"
+                style={{ background: color.bg, color: color.text }}
+              >
+                {categoriaLabel(doc.categoria)}
+              </span>
+              <p className="text-xs sm:text-sm text-gray-600 truncate">{doc.perteneceA}</p>
               {doc.direccion && (
-                <p className="text-xs text-gray-500">{doc.direccion}</p>
+                <p className="text-xs text-gray-500 truncate hidden sm:block">{doc.direccion}</p>
               )}
               {doc.telefono && (
-                <p className="text-xs text-gray-500">📞 {doc.telefono}</p>
+                <p className="text-xs text-gray-500 truncate">📞 {doc.telefono}</p>
               )}
               {doc.horarioAtencion && (
-                <p className="text-xs text-gray-500">🕐 {doc.horarioAtencion}</p>
+                <p className="text-xs text-gray-500 truncate hidden sm:block">🕐 {doc.horarioAtencion}</p>
               )}
               <p className="text-xs">
                 {doc.gpsLat != null ? (
@@ -170,21 +176,21 @@ export default function MedicosClient({ role }: { role: string }) {
                 )}
               </p>
               {doc.notas && (
-                <p className="text-xs text-gray-400 line-clamp-2">{doc.notas}</p>
+                <p className="text-xs text-gray-400 line-clamp-2 hidden sm:block">{doc.notas}</p>
               )}
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-col sm:flex-row gap-2 mt-2">
                 <button
                   onClick={() => {
                     setEditing(doc);
                     setShowForm(true);
                   }}
-                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
+                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => handleDelete(doc)}
-                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
+                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
                 >
                   {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
                 </button>

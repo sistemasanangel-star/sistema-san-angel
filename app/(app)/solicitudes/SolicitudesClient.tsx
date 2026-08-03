@@ -88,67 +88,72 @@ export default function SolicitudesClient({ role }: { role: string }) {
       {items.length === 0 && (
         <p className="text-gray-400 text-sm">No hay solicitudes registradas.</p>
       )}
-      {items.map((item) => (
-        <div key={item.id} className="card p-4 flex flex-col gap-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="font-medium text-brand-black">{item.targetLabel}</p>
-              <p className="text-xs text-gray-500">
-                {TARGET_TYPE_LABEL[item.targetType] ?? item.targetType} · Solicitado por{" "}
-                {item.requestedBy.name} ·{" "}
-                {new Date(item.createdAt).toLocaleString("es-GT")}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        {items.map((item) => (
+          <div key={item.id} className="card p-3 sm:p-4 flex flex-col gap-2 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-medium text-brand-black text-sm sm:text-base truncate">
+                  {item.targetLabel}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {TARGET_TYPE_LABEL[item.targetType] ?? item.targetType}
+                </p>
+                <p className="text-xs text-gray-400 hidden sm:block">
+                  Solicitado por {item.requestedBy.name} ·{" "}
+                  {new Date(item.createdAt).toLocaleString("es-GT")}
+                </p>
+              </div>
+              {statusBadge(item.status)}
+            </div>
+
+            {role === "ADMIN" && item.status === "PENDIENTE" && (
+              <div className="flex flex-col sm:flex-row gap-2 mt-1">
+                <button
+                  onClick={() => resolve(item.id, "approve")}
+                  className="btn-primary px-3 py-1.5 text-xs sm:text-sm"
+                >
+                  Aprobar
+                </button>
+                <button
+                  onClick={() => resolve(item.id, "reject")}
+                  className="btn-danger px-3 py-1.5 text-xs sm:text-sm"
+                >
+                  Rechazar
+                </button>
+              </div>
+            )}
+
+            {role === "ADMIN" && item.status === "APROBADO" && item.token && (
+              <p className="text-xs sm:text-sm text-gray-600">
+                Token:{" "}
+                <span className="font-mono font-semibold text-brand-blue">
+                  {item.token}
+                </span>
               </p>
-            </div>
-            {statusBadge(item.status)}
+            )}
+
+            {role !== "ADMIN" && item.status === "APROBADO" && (
+              <div className="flex flex-col gap-2 mt-1">
+                <input
+                  className="input-field text-sm"
+                  placeholder="Ingresar token"
+                  value={redeemInputs[item.id] ?? ""}
+                  onChange={(e) =>
+                    setRedeemInputs((s) => ({ ...s, [item.id]: e.target.value }))
+                  }
+                />
+                <button
+                  onClick={() => redeem(item.id)}
+                  className="btn-danger px-3 py-1.5 text-xs sm:text-sm"
+                >
+                  Eliminar con token
+                </button>
+              </div>
+            )}
           </div>
-
-          {role === "ADMIN" && item.status === "PENDIENTE" && (
-            <div className="flex gap-2 mt-1">
-              <button
-                onClick={() => resolve(item.id, "approve")}
-                className="btn-primary px-3 py-1.5 text-sm"
-              >
-                Aprobar
-              </button>
-              <button
-                onClick={() => resolve(item.id, "reject")}
-                className="btn-danger px-3 py-1.5 text-sm"
-              >
-                Rechazar
-              </button>
-            </div>
-          )}
-
-          {role === "ADMIN" && item.status === "APROBADO" && item.token && (
-            <p className="text-sm text-gray-600">
-              Token de un solo uso:{" "}
-              <span className="font-mono font-semibold text-brand-blue">
-                {item.token}
-              </span>{" "}
-              (compártelo con la visitadora)
-            </p>
-          )}
-
-          {role !== "ADMIN" && item.status === "APROBADO" && (
-            <div className="flex gap-2 mt-1">
-              <input
-                className="input-field text-sm max-w-[160px]"
-                placeholder="Ingresar token"
-                value={redeemInputs[item.id] ?? ""}
-                onChange={(e) =>
-                  setRedeemInputs((s) => ({ ...s, [item.id]: e.target.value }))
-                }
-              />
-              <button
-                onClick={() => redeem(item.id)}
-                className="btn-danger px-3 py-1.5 text-sm"
-              >
-                Eliminar con token
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

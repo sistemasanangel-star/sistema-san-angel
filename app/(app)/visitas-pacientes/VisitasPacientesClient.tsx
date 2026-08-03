@@ -115,27 +115,28 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
         ) : admissions.length === 0 ? (
           <p className="text-gray-400 text-sm">No hay pacientes internados activos.</p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {admissions.map((a) => (
-              <div key={a.id} className="card p-4 flex items-center justify-between gap-3">
-                <div>
-                  <p className="font-medium text-brand-black">{a.paciente}</p>
+              <div key={a.id} className="card p-3 sm:p-4 flex flex-col gap-2 min-w-0">
+                <div className="min-w-0">
+                  <p className="font-medium text-brand-black text-sm sm:text-base truncate">{a.paciente}</p>
                   <p className="text-xs text-gray-500">
-                    Habitación {a.habitacion} · Ingresó{" "}
-                    {new Date(a.fechaIngreso).toLocaleString("es-GT")} ·{" "}
-                    {diasInternado(a.fechaIngreso)} internado
+                    Hab. {a.habitacion} · {diasInternado(a.fechaIngreso)}
+                  </p>
+                  <p className="text-xs text-gray-400 hidden sm:block">
+                    Ingresó {new Date(a.fechaIngreso).toLocaleString("es-GT")}
                   </p>
                 </div>
-                <div className="flex gap-2 shrink-0">
+                <div className="flex flex-col gap-2 mt-1">
                   <button
                     onClick={() => setVisitAdmission(a)}
-                    className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
+                    className="text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                   >
                     Registrar visita
                   </button>
                   <button
                     onClick={() => darDeAlta(a)}
-                    className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red whitespace-nowrap"
+                    className="text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
                   >
                     Ya no hay seguimiento
                   </button>

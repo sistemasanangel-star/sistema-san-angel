@@ -120,26 +120,26 @@ export default function ComisionesAdminClient() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="card p-5 relative overflow-hidden">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="card p-3 sm:p-5 relative overflow-hidden">
           <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#2E6DA4" }} />
-          <p className="text-2xl font-semibold" style={{ color: "#2E6DA4" }}>{money(totales.montoCobrado)}</p>
-          <p className="text-sm text-gray-500 mt-1">Total cobrado</p>
+          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#2E6DA4" }}>{money(totales.montoCobrado)}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Total cobrado</p>
         </div>
-        <div className="card p-5 relative overflow-hidden">
+        <div className="card p-3 sm:p-5 relative overflow-hidden">
           <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#7C3AED" }} />
-          <p className="text-2xl font-semibold" style={{ color: "#7C3AED" }}>{money(totales.montoComision)}</p>
-          <p className="text-sm text-gray-500 mt-1">Total comisión</p>
+          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#7C3AED" }}>{money(totales.montoComision)}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Total comisión</p>
         </div>
-        <div className="card p-5 relative overflow-hidden">
+        <div className="card p-3 sm:p-5 relative overflow-hidden">
           <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#279257" }} />
-          <p className="text-2xl font-semibold" style={{ color: "#279257" }}>{money(totales.pagado)}</p>
-          <p className="text-sm text-gray-500 mt-1">Pagado</p>
+          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#279257" }}>{money(totales.pagado)}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Pagado</p>
         </div>
-        <div className="card p-5 relative overflow-hidden">
+        <div className="card p-3 sm:p-5 relative overflow-hidden">
           <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#B45309" }} />
-          <p className="text-2xl font-semibold" style={{ color: "#B45309" }}>{money(totales.pendiente)}</p>
-          <p className="text-sm text-gray-500 mt-1">Pendiente</p>
+          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#B45309" }}>{money(totales.pendiente)}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">Pendiente</p>
         </div>
       </div>
 

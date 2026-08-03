@@ -55,33 +55,35 @@ export default function PreguntasClient() {
       {loading ? (
         <p className="text-gray-400 text-sm">Cargando...</p>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {questions.map((q) => (
-            <div key={q.id} className="card p-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-brand-black">{q.texto}</p>
-                <p className="text-xs text-gray-500">{questionTypeLabel(q.tipo)}</p>
-              </div>
-              <div className="flex items-center gap-2">
+            <div key={q.id} className="card p-3 sm:p-4 flex flex-col gap-2 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-medium text-brand-black text-sm sm:text-base line-clamp-2">
+                  {q.texto}
+                </p>
                 <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
+                  className={`text-xs px-2 py-1 rounded-full font-medium shrink-0 ${
                     q.active ? "badge-ok" : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {q.active ? "Activa" : "Desactivada"}
                 </span>
+              </div>
+              <p className="text-xs text-gray-500">{questionTypeLabel(q.tipo)}</p>
+              <div className="flex flex-col sm:flex-row gap-2 mt-1">
                 <button
                   onClick={() => {
                     setEditing(q);
                     setShowForm(true);
                   }}
-                  className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
+                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => toggleActive(q)}
-                  className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
+                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
                 >
                   {q.active ? "Desactivar" : "Activar"}
                 </button>
