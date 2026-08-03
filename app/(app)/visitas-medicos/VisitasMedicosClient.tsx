@@ -117,7 +117,7 @@ export default function VisitasMedicosClient({ role }: { role: string }) {
             : "No hay visitas registradas ese día. Prueba con otra fecha o \"Ver todas\"."}
         </p>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {visits.map((v) => (
             <div key={v.id} className="card p-4 flex items-start gap-4">
               <img

@@ -89,7 +89,7 @@ export default function SolicitudesClient({ role }: { role: string }) {
         <p className="text-gray-400 text-sm">No hay solicitudes registradas.</p>
       )}
       {items.map((item) => (
-        <div key={item.id} className="card p-4 flex flex-col gap-2">
+        <div key={item.id} className="card p-4 flex flex-col gap-3">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-medium text-brand-black">{item.targetLabel}</p>

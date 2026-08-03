@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
+import ImageLightbox from "@/components/ImageLightbox";
 import {
   ResponsiveContainer,
   BarChart,
@@ -179,7 +180,7 @@ export default function ComisionesAdminClient() {
         ) : commissions.length === 0 ? (
           <p className="text-gray-400 text-sm">No hay comisiones registradas para este mes.</p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {commissions.map((c) => (
               <div key={c.id} className="card p-4 flex items-start justify-between gap-3">
                 <div>
@@ -256,14 +257,7 @@ export default function ComisionesAdminClient() {
         />
       )}
 
-      {zoomed && (
-        <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          onClick={() => setZoomed(null)}
-        >
-          <img src={zoomed} alt="Firma" className="max-h-[80vh] bg-white rounded-lg p-4" />
-        </div>
-      )}
+      {zoomed && <ImageLightbox src={zoomed} onClose={() => setZoomed(null)} />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ImageLightbox from "@/components/ImageLightbox";
 
 type Opinion = {
   id: string;
@@ -56,7 +57,7 @@ export default function OpinionesClient() {
       ) : opinions.length === 0 ? (
         <p className="text-gray-400 text-sm">No hay opiniones registradas.</p>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {opinions.map((o) => (
             <div key={o.id} className="card p-4 flex items-start gap-4">
               {o.fotoUrl && (
@@ -105,14 +106,7 @@ export default function OpinionesClient() {
         </div>
       )}
 
-      {zoomed && (
-        <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          onClick={() => setZoomed(null)}
-        >
-          <img src={zoomed} alt="Evidencia" className="max-h-[80vh] rounded-lg" />
-        </div>
-      )}
+      {zoomed && <ImageLightbox src={zoomed} onClose={() => setZoomed(null)} />}
     </div>
   );
 }

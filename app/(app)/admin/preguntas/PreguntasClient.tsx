@@ -55,7 +55,7 @@ export default function PreguntasClient() {
       {loading ? (
         <p className="text-gray-400 text-sm">Cargando...</p>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {questions.map((q) => (
             <div key={q.id} className="card p-4 flex items-center justify-between gap-3">
               <div>

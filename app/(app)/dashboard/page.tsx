@@ -153,7 +153,7 @@ export default async function DashboardPage() {
             {recentActivity.length === 0 ? (
               <p className="text-gray-400 text-sm">Sin actividad reciente.</p>
             ) : (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {recentActivity.map((a) => (
                   <div
                     key={a.id}

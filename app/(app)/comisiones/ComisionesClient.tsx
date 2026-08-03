@@ -66,7 +66,7 @@ export default function ComisionesClient() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {pendientes.map((c) => (
-              <div key={c.id} className="card card-interactive p-4 flex flex-col gap-2 relative overflow-hidden">
+              <div key={c.id} className="card card-interactive p-4 flex flex-col gap-3 relative overflow-hidden">
                 <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#B45309" }} />
                 <div className="flex items-center gap-3">
                   <span className="icon-chip" style={{ background: "#FEF3E2" }}>
@@ -101,7 +101,7 @@ export default function ComisionesClient() {
         {pagadas.length === 0 ? (
           <p className="text-gray-400 text-sm">Aún no has pagado ninguna comisión.</p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {pagadas.map((c) => (
               <div key={c.id} className="card p-4 flex items-center justify-between gap-3">
                 <div>

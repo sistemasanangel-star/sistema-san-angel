@@ -115,7 +115,7 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
         ) : admissions.length === 0 ? (
           <p className="text-gray-400 text-sm">No hay pacientes internados activos.</p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {admissions.map((a) => (
               <div key={a.id} className="card p-4 flex items-center justify-between gap-3">
                 <div>
@@ -176,7 +176,7 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
             completo está disponible en Informes.
           </p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {todayVisits.map((v) => (
               <div key={v.id} className="card p-4">
                 <p className="font-medium text-brand-black">

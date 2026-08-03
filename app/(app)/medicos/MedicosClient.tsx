@@ -129,7 +129,7 @@ export default function MedicosClient({ role }: { role: string }) {
           {doctors.map((doc) => {
             const color = categoriaColor(doc.categoria);
             return (
-            <div key={doc.id} className="card card-interactive p-4 flex flex-col gap-2">
+            <div key={doc.id} className="card card-interactive p-4 flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-3">
                   <span
