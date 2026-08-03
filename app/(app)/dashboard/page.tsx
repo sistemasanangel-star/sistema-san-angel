@@ -99,25 +99,28 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((s) => (
           <Link
             key={s.label}
             href={s.href}
-            className="card card-interactive p-5 flex items-start gap-3 relative overflow-hidden"
+            className="card card-interactive p-3 sm:p-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3 relative overflow-hidden"
           >
             <span
               className="absolute top-0 left-0 right-0 h-1"
               style={{ background: s.color }}
             />
-            <span className="icon-chip" style={{ background: s.bg }}>
+            <span
+              className="icon-chip"
+              style={{ background: s.bg, width: "2rem", height: "2rem", fontSize: "1rem" }}
+            >
               {s.icon}
             </span>
             <div>
-              <p className="text-3xl font-semibold" style={{ color: s.color }}>
+              <p className="text-xl sm:text-3xl font-semibold" style={{ color: s.color }}>
                 {s.value}
               </p>
-              <p className="text-sm text-gray-500 mt-1">{s.label}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">{s.label}</p>
             </div>
           </Link>
         ))}

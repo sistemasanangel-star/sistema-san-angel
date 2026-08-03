@@ -64,21 +64,26 @@ export default function ComisionesClient() {
         ) : pendientes.length === 0 ? (
           <p className="text-gray-400 text-sm">No hay comisiones pendientes.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {pendientes.map((c) => (
-              <div key={c.id} className="card card-interactive p-4 flex flex-col gap-3 relative overflow-hidden">
+              <div key={c.id} className="card card-interactive p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 relative overflow-hidden">
                 <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#B45309" }} />
-                <div className="flex items-center gap-3">
-                  <span className="icon-chip" style={{ background: "#FEF3E2" }}>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span
+                    className="icon-chip"
+                    style={{ background: "#FEF3E2", width: "2rem", height: "2rem", fontSize: "1rem" }}
+                  >
                     💵
                   </span>
-                  <div>
-                    <p className="font-medium text-brand-black">{c.doctor.nombre}</p>
-                    <p className="text-xs text-gray-500">{c.doctor.perteneceA}</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-brand-black text-sm sm:text-base truncate">
+                      {c.doctor.nombre}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">{c.doctor.perteneceA}</p>
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 capitalize">{mesLabel(c.mes)}</p>
-                <p className="text-2xl font-semibold" style={{ color: "#B45309" }}>
+                <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#B45309" }}>
                   {money(c.montoComision)}
                 </p>
                 <p className="text-xs text-gray-400">
@@ -86,7 +91,7 @@ export default function ComisionesClient() {
                 </p>
                 <button
                   onClick={() => setPaying(c)}
-                  className="btn-primary px-4 py-2 text-sm mt-2"
+                  className="btn-primary px-3 sm:px-4 py-2 text-xs sm:text-sm mt-2"
                 >
                   Pagar comisión
                 </button>
