@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Role: "ADMIN" | "VISITADORA"
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  name         String
+  role         String
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  sessions       Session[]
+  doctors        Doctor[]      @relation("DoctorCreatedBy")
+  doctorVisits   DoctorVisit[]
+  patientVisits  PatientVisit[]
+  deleteRequests DeleteToken[] @relation("TokenRequestedBy")
+  locationPings  LocationPing[]
+
+  jornadaActiva  Boolean   @default(false)
+  ultimaUbicLat  Float?
+  ultimaUbicLng  Float?
+  ultimaUbicHora DateTime?
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// categoria: SANATORIO | CLINICA_PRIVADA | HOSPITAL | CENTRO_SALUD | COMADRONA | FARMACIA | LABORATORIO | CONSULTORIO | OTRO
+model Doctor {
+  id           String   @id @default(cuid())
+  nombre       String
+  especialidad String?
+  categoria    String
+  perteneceA   String
+  direccion    String?
+  gpsLat       Float?
+  gpsLng       Float?
+  telefono     String?
+  notas        String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  createdById  String
+  createdBy    User     @relation("DoctorCreatedBy", fields: [createdById], references: [id])
+
+  doctorVisits  DoctorVisit[]
+  patientVisits PatientVisit[]
+  opinions      Opinion[]
+}
+
+// tipo: TEXTO | SI_NO | OPCION_MULTIPLE | ESCALA | NUMERO
+model PatientVisitQuestion {
+  id        String   @id @default(cuid())
+  texto     String
+  tipo      String
+  opciones  String? // JSON array string, solo para OPCION_MULTIPLE
+  orden     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  answers PatientVisitAnswer[]
+}
+
+model PatientVisit {
+  id           String   @id @default(cuid())
+  paciente     String
+  fecha        DateTime @default(now())
+  visitadoraId String
+  visitadora   User     @relation(fields: [visitadoraId], references: [id])
+  doctorId     String?
+  doctor       Doctor?  @relation(fields: [doctorId], references: [id])
+  gpsLat       Float?
+  gpsLng       Float?
+
+  answers PatientVisitAnswer[]
+}
+
+model PatientVisitAnswer {
+  id         String               @id @default(cuid())
+  visitId    String
+  visit      PatientVisit         @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  questionId String
+  question   PatientVisitQuestion @relation(fields: [questionId], references: [id])
+  valor      String
+}
+
+model DoctorVisit {
+  id            String   @id @default(cuid())
+  doctorId      String
+  doctor        Doctor   @relation(fields: [doctorId], references: [id])
+  visitadoraId  String
+  visitadora    User     @relation(fields: [visitadoraId], references: [id])
+  fecha         DateTime @default(now())
+  gpsLat        Float
+  gpsLng        Float
+  recibidoPor   String
+  firmaImagen   String // dataURL base64 del canvas
+  observaciones String?
+  createdAt     DateTime @default(now())
+}
+
+// tipo: POSITIVA | NEGATIVA
+model Opinion {
+  id          String   @id @default(cuid())
+  doctorId    String?
+  doctor      Doctor?  @relation(fields: [doctorId], references: [id])
+  tipo        String
+  descripcion String
+  fotoUrl     String?
+  atendido    Boolean  @default(false)
+  fecha       DateTime @default(now())
+}
+
+// targetType: DOCTOR | PATIENT_VISIT | DOCTOR_VISIT
+// status: PENDIENTE | APROBADO | RECHAZADO | USADO
+model DeleteToken {
+  id            String    @id @default(cuid())
+  targetType    String
+  targetId      String
+  targetLabel   String
+  requestedById String
+  requestedBy   User      @relation("TokenRequestedBy", fields: [requestedById], references: [id])
+  status        String    @default("PENDIENTE")
+  token         String?   @unique
+  createdAt     DateTime  @default(now())
+  resolvedAt    DateTime?
+}
+
+model LocationPing {
+  id           String   @id @default(cuid())
+  visitadoraId String
+  visitadora   User     @relation(fields: [visitadoraId], references: [id])
+  lat          Float
+  lng          Float
+  timestamp    DateTime @default(now())
+}

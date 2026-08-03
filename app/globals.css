@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f6f8;
+  --foreground: #1a1a1a;
+  --brand-blue: #2e6da4;
+  --brand-blue-dark: #24557f;
+  --brand-black: #1a1a1a;
+  --brand-white: #ffffff;
+  --brand-gray: #f4f6f8;
+  --brand-green: #3bb273;
+  --brand-red: #e4574c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-black: var(--brand-black);
+  --color-brand-white: var(--brand-white);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-green: var(--brand-green);
+  --color-brand-red: var(--brand-red);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.card {
+  background: var(--brand-white);
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(26, 26, 26, 0.06);
+}
+
+.btn-primary {
+  background: var(--brand-blue);
+  color: white;
+  border-radius: 0.75rem;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+.btn-primary:hover {
+  background: var(--brand-blue-dark);
+}
+.btn-primary:disabled {
+  background: #a9bfd1;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: var(--brand-red);
+  color: white;
+  border-radius: 0.75rem;
+  transition: background-color 150ms ease;
+}
+.btn-danger:hover {
+  background: #c8443a;
+}
+
+.input-field {
+  border: 1px solid #d7dde3;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: white;
+  transition: border-color 150ms ease;
+  width: 100%;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--brand-blue);
+}
+
+.badge-ok {
+  background: rgba(59, 178, 115, 0.12);
+  color: var(--brand-green);
+}
+.badge-pending {
+  background: rgba(228, 87, 76, 0.12);
+  color: var(--brand-red);
+}
+
+.modal-overlay {
+  animation: fadeIn 200ms ease;
+}
+.modal-panel {
+  animation: scaleIn 220ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes splashScale {
+  0% { opacity: 0; transform: scale(1.4); }
+  55% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(0.92); }
+}
+.animate-splash {
+  animation: splashScale 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

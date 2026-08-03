@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hospital San Ángel — Módulo de Visitadoras Médicas
 
-## Getting Started
+Sistema de gestión para visitadoras médicas: directorio de médicos, visitas a
+médicos y pacientes con firma y GPS, informes en Excel, buzón de opinión por
+QR con envío a WhatsApp, mapa de ubicación en vivo y control de eliminación
+por token.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router) + TypeScript + Tailwind CSS 4
+- Prisma ORM + SQLite en desarrollo local
+- Leaflet / OpenStreetMap (sin costo, sin API key) para el mapa en vivo
+- `signature_pad` para la firma del receptor
+- `exceljs` para los reportes con formato de marca
+- `qrcode` para generar los códigos QR de opinión
+
+## Desarrollo local
 
 ```bash
+npm install
+npx prisma migrate dev
+npm run seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Usuarios de prueba (creados por el seed):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Admin: `admin` / `admin123`
+- Visitadora: `visitadora1` / `visita123`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Variables de entorno: copia `.env.example` a `.env` y ajusta
+`NEXT_PUBLIC_WHATSAPP_NUMBER` con el número real del sanatorio.
 
-## Learn More
+## Despliegue en Vercel
 
-To learn more about Next.js, take a look at the following resources:
+SQLite no persiste en funciones serverless. Antes de desplegar:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Crea una base de datos Postgres (Neon, Vercel Postgres o Supabase).
+2. En `prisma/schema.prisma`, cambia `provider = "sqlite"` por
+   `provider = "postgresql"`.
+3. Define `DATABASE_URL` en Vercel con la cadena de conexión de Postgres.
+4. Corre `npx prisma migrate deploy` apuntando a esa base (o vuelve a generar
+   la migración inicial con `npx prisma migrate dev` en local contra Postgres
+   antes de subir).
+5. Ejecuta el seed una vez contra la base de producción si quieres el usuario
+   admin inicial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Pendientes de decisión (ver spec original)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Historial de ruta GPS del día (hoy solo se usa el último punto para el
+  mapa en vivo; el historial ya se guarda en la tabla `LocationPing` por si
+  se quiere una vista de recorrido más adelante).
+- Notificaciones push para solicitudes de token (hoy se revisan en
+  "Solicitudes de borrado").

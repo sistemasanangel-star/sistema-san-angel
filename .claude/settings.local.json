@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npx --yes create-next-app@latest hsa-app --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(node prisma/seed.cjs)",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/doctors/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/api/doctors/pertenece\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/medicos\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/tokens/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/api/tokens/redeem\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/questions/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/admin/preguntas\" \"/c/Users/aguil/Documents/san angel visitadora/app/api/patient-visits\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/visitas-pacientes\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/patient-visits/[id]\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/doctor-visits/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/visitas-medicos\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/users/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/admin/usuarios\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/opinions/[id]\" \"/c/Users/aguil/Documents/san angel visitadora/app/opinion/[doctorId]\" \"/c/Users/aguil/Documents/san angel visitadora/app/\\(app\\)/opiniones\")",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/public/doctors/[id]\")",
+      "Bash(node -e ' *)",
+      "Bash(npm run *)",
+      "Bash(gh auth *)",
+      "Bash(gh --version)",
+      "PowerShell(Get-Command gh -ErrorAction SilentlyContinue)",
+      "PowerShell(gh --version 2>&1)"
+    ]
+  }
+}
