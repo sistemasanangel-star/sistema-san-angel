@@ -13,7 +13,7 @@ const NAV_COMMON = [
 
 const NAV_VISITADORA_ONLY = [
   { href: "/visitas-medicos", label: "Visitas a médicos", icon: "📋" },
-  { href: "/visitas-pacientes", label: "Visitas a pacientes", icon: "🧑‍🤝‍🧑" },
+  { href: "/visitas-pacientes", label: "Visitas a pacientes", icon: "🩹" },
   { href: "/jornada", label: "Mi jornada", icon: "📍" },
 ];
 

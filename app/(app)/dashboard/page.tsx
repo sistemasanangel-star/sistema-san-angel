@@ -22,19 +22,37 @@ export default async function DashboardPage() {
     ]);
 
   const stats = [
-    { label: "Médicos / lugares activos", value: doctors, href: "/medicos", icon: "🩺" },
-    { label: "Pacientes internados", value: pacientesInternados, href: "/visitas-pacientes", icon: "🛏️" },
+    {
+      label: "Médicos / lugares activos",
+      value: doctors,
+      href: "/medicos",
+      icon: "🩺",
+      bg: "#EAF2FA",
+      color: "#2E6DA4",
+    },
+    {
+      label: "Pacientes internados",
+      value: pacientesInternados,
+      href: "/visitas-pacientes",
+      icon: "🛏️",
+      bg: "#FDECF3",
+      color: "#DB2777",
+    },
     {
       label: "Visitas a médicos hoy",
       value: doctorVisitsToday,
       href: "/visitas-medicos",
       icon: "📋",
+      bg: "#F1EBFC",
+      color: "#7C3AED",
     },
     {
       label: "Visitas a pacientes hoy",
       value: patientVisitsToday,
       href: "/visitas-pacientes",
-      icon: "🧑‍🤝‍🧑",
+      icon: "🩹",
+      bg: "#E7F8F5",
+      color: "#0E9488",
     },
   ];
 
@@ -44,6 +62,8 @@ export default async function DashboardPage() {
       value: pendingTokens,
       href: "/solicitudes",
       icon: "🔑",
+      bg: "#FEF3E2",
+      color: "#B45309",
     });
   }
 
@@ -63,8 +83,10 @@ export default async function DashboardPage() {
       </div>
 
       {isEmptySystem && (
-        <div className="card p-5 flex items-center gap-4 bg-blue-50/50">
-          <span className="text-3xl">👋</span>
+        <div className="card p-5 flex items-center gap-4 bg-blue-50/50 animate-pop">
+          <span className="icon-chip" style={{ width: "3rem", height: "3rem", fontSize: "1.5rem" }}>
+            👋
+          </span>
           <div>
             <p className="font-medium text-brand-black">
               Aún no hay nada registrado
@@ -82,11 +104,17 @@ export default async function DashboardPage() {
           <Link
             key={s.label}
             href={s.href}
-            className="card card-interactive p-5 flex items-start gap-3"
+            className="card card-interactive p-5 flex items-start gap-3 relative overflow-hidden"
           >
-            <span className="icon-chip">{s.icon}</span>
+            <span
+              className="absolute top-0 left-0 right-0 h-1"
+              style={{ background: s.color }}
+            />
+            <span className="icon-chip" style={{ background: s.bg }}>
+              {s.icon}
+            </span>
             <div>
-              <p className="text-3xl font-semibold text-brand-blue">
+              <p className="text-3xl font-semibold" style={{ color: s.color }}>
                 {s.value}
               </p>
               <p className="text-sm text-gray-500 mt-1">{s.label}</p>
@@ -132,7 +160,17 @@ export default async function DashboardPage() {
                     className="flex items-center justify-between gap-3 py-2 border-b border-gray-50 last:border-0"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">{a.icon}</span>
+                      <span
+                        className="icon-chip"
+                        style={{
+                          width: "2.1rem",
+                          height: "2.1rem",
+                          fontSize: "1rem",
+                          background: a.icon === "📋" ? "#F1EBFC" : "#E7F8F5",
+                        }}
+                      >
+                        {a.icon}
+                      </span>
                       <div>
                         <p className="text-sm text-brand-black">{a.description}</p>
                         <p className="text-xs text-gray-500">
@@ -211,7 +249,7 @@ async function getRecentActivity() {
     })),
     ...patientVisits.map((v) => ({
       id: `pv-${v.id}`,
-      icon: "🧑‍🤝‍🧑",
+      icon: "🩹",
       description: `Visita a paciente: ${v.paciente}${
         v.admission ? ` (Hab. ${v.admission.habitacion})` : ""
       }`,
