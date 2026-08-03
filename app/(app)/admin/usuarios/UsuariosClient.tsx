@@ -16,6 +16,7 @@ export default function UsuariosClient() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
+  const [error, setError] = useState("");
 
   async function load() {
     setLoading(true);
@@ -29,17 +30,34 @@ export default function UsuariosClient() {
     load();
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      const t = setTimeout(() => setError(""), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [error]);
+
   async function toggleActive(u: User) {
-    await fetch(`/api/users/${u.id}`, {
+    setError("");
+    const res = await fetch(`/api/users/${u.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ active: !u.active }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error ?? "No se pudo actualizar el usuario");
+      return;
+    }
     load();
   }
 
   return (
     <div className="flex flex-col gap-4">
+      {error && (
+        <div className="card p-3 text-sm text-brand-red bg-red-50">{error}</div>
+      )}
+
       <button
         onClick={() => {
           setEditing(null);
