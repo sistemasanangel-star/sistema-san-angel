@@ -49,6 +49,8 @@ export default async function DashboardPage() {
 
   const isEmptySystem = doctors === 0 && pacientesInternados === 0;
 
+  const recentActivity = isAdmin ? await getRecentActivity() : [];
+
   return (
     <div className="flex flex-col gap-6 max-w-5xl">
       <div>
@@ -93,26 +95,85 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      <div className="card p-5">
-        <h2 className="font-medium text-brand-black mb-3">Acciones rápidas</h2>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/visitas-medicos" className="btn-primary px-4 py-2 text-sm">
-            + Registrar visita a médico
-          </Link>
-          <Link
-            href="/visitas-pacientes"
-            className="btn-primary px-4 py-2 text-sm"
-          >
-            + Registrar visita a paciente
-          </Link>
-          <Link
-            href="/medicos"
-            className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
-          >
-            + Agregar médico
-          </Link>
+      {isAdmin ? (
+        <>
+          <div className="card p-5">
+            <h2 className="font-medium text-brand-black mb-3">Acciones rápidas</h2>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/medicos" className="btn-primary px-4 py-2 text-sm">
+                + Agregar médico
+              </Link>
+              <Link
+                href="/informes"
+                className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              >
+                Ver informes
+              </Link>
+              <Link
+                href="/solicitudes"
+                className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              >
+                Revisar solicitudes
+              </Link>
+            </div>
+          </div>
+
+          <div className="card p-5">
+            <h2 className="font-medium text-brand-black mb-3">
+              Actividad reciente de las visitadoras
+            </h2>
+            {recentActivity.length === 0 ? (
+              <p className="text-gray-400 text-sm">Sin actividad reciente.</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {recentActivity.map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between gap-3 py-2 border-b border-gray-50 last:border-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{a.icon}</span>
+                      <div>
+                        <p className="text-sm text-brand-black">{a.description}</p>
+                        <p className="text-xs text-gray-500">
+                          {a.visitadora} ·{" "}
+                          {a.fecha.toLocaleString("es-GT", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="card p-5">
+          <h2 className="font-medium text-brand-black mb-3">Acciones rápidas</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/visitas-medicos" className="btn-primary px-4 py-2 text-sm">
+              + Registrar visita a médico
+            </Link>
+            <Link
+              href="/visitas-pacientes"
+              className="btn-primary px-4 py-2 text-sm"
+            >
+              + Registrar visita a paciente
+            </Link>
+            <Link
+              href="/medicos"
+              className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+            >
+              + Agregar médico
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -121,4 +182,43 @@ function startOfToday() {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+async function getRecentActivity() {
+  const [doctorVisits, patientVisits] = await Promise.all([
+    prisma.doctorVisit.findMany({
+      take: 8,
+      orderBy: { fecha: "desc" },
+      include: { visitadora: { select: { name: true } }, doctor: { select: { nombre: true } } },
+    }),
+    prisma.patientVisit.findMany({
+      take: 8,
+      orderBy: { fecha: "desc" },
+      include: {
+        visitadora: { select: { name: true } },
+        admission: { select: { habitacion: true } },
+      },
+    }),
+  ]);
+
+  const merged = [
+    ...doctorVisits.map((v) => ({
+      id: `dv-${v.id}`,
+      icon: "📋",
+      description: `Visita a médico: ${v.doctor.nombre}`,
+      visitadora: v.visitadora.name,
+      fecha: v.fecha,
+    })),
+    ...patientVisits.map((v) => ({
+      id: `pv-${v.id}`,
+      icon: "🧑‍🤝‍🧑",
+      description: `Visita a paciente: ${v.paciente}${
+        v.admission ? ` (Hab. ${v.admission.habitacion})` : ""
+      }`,
+      visitadora: v.visitadora.name,
+      fecha: v.fecha,
+    })),
+  ];
+
+  return merged.sort((a, b) => b.fecha.getTime() - a.fecha.getTime()).slice(0, 8);
 }

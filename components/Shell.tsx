@@ -6,12 +6,18 @@ import { useState } from "react";
 import Logo from "./Logo";
 import type { SessionUser } from "@/lib/auth";
 
-const NAV_VISITADORA = [
+const NAV_COMMON = [
   { href: "/dashboard", label: "Inicio", icon: "🏠" },
   { href: "/medicos", label: "Médicos", icon: "🩺" },
+];
+
+const NAV_VISITADORA_ONLY = [
   { href: "/visitas-medicos", label: "Visitas a médicos", icon: "📋" },
   { href: "/visitas-pacientes", label: "Visitas a pacientes", icon: "🧑‍🤝‍🧑" },
   { href: "/jornada", label: "Mi jornada", icon: "📍" },
+];
+
+const NAV_TAIL_COMMON = [
   { href: "/informes", label: "Informes", icon: "📊" },
   { href: "/solicitudes", label: "Solicitudes de borrado", icon: "🔑" },
 ];
@@ -37,8 +43,8 @@ export default function Shell({
 
   const items =
     user.role === "ADMIN"
-      ? [...NAV_VISITADORA, ...NAV_ADMIN_EXTRA]
-      : NAV_VISITADORA;
+      ? [...NAV_COMMON, ...NAV_TAIL_COMMON, ...NAV_ADMIN_EXTRA]
+      : [...NAV_COMMON, ...NAV_VISITADORA_ONLY, ...NAV_TAIL_COMMON];
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });

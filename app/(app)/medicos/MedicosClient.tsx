@@ -27,7 +27,6 @@ export default function MedicosClient({ role }: { role: string }) {
   const [showForm, setShowForm] = useState(false);
   const [perteneceOptions, setPerteneceOptions] = useState<string[]>([]);
   const [toast, setToast] = useState("");
-  const [qrDoctor, setQrDoctor] = useState<Doctor | null>(null);
 
   async function load() {
     setLoading(true);
@@ -171,12 +170,6 @@ export default function MedicosClient({ role }: { role: string }) {
                   Editar
                 </button>
                 <button
-                  onClick={() => setQrDoctor(doc)}
-                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border border-brand-blue text-brand-blue"
-                >
-                  QR opinión
-                </button>
-                <button
                   onClick={() => handleDelete(doc)}
                   className="flex-1 text-sm px-3 py-1.5 rounded-lg border border-brand-red text-brand-red"
                 >
@@ -200,42 +193,7 @@ export default function MedicosClient({ role }: { role: string }) {
         />
       )}
 
-      {qrDoctor && <QrModal doctor={qrDoctor} onClose={() => setQrDoctor(null)} />}
     </div>
-  );
-}
-
-function QrModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void }) {
-  const [dataUrl, setDataUrl] = useState<string | null>(null);
-  const url = typeof window !== "undefined" ? `${window.location.origin}/opinion/${doctor.id}` : "";
-
-  useEffect(() => {
-    import("qrcode").then((QRCode) => {
-      QRCode.toDataURL(url, { width: 320, margin: 1, color: { dark: "#1A1A1A" } }).then(setDataUrl);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <Modal title={`QR de opinión — ${doctor.nombre}`} onClose={onClose}>
-      <div className="flex flex-col items-center gap-4">
-        {dataUrl ? (
-          <img src={dataUrl} alt="Código QR" className="w-64 h-64" />
-        ) : (
-          <p className="text-gray-400 text-sm">Generando...</p>
-        )}
-        <p className="text-xs text-gray-500 text-center break-all">{url}</p>
-        {dataUrl && (
-          <a
-            href={dataUrl}
-            download={`qr-${doctor.nombre.replace(/\s+/g, "-")}.png`}
-            className="btn-primary px-4 py-2 text-sm"
-          >
-            Descargar QR
-          </a>
-        )}
-      </div>
-    </Modal>
   );
 }
 
