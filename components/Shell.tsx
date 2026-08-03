@@ -55,8 +55,8 @@ export default function Shell({
   return (
     <div className="flex min-h-screen flex-1">
       {/* Sidebar desktop */}
-      <aside className="hidden md:flex md:w-64 md:flex-col bg-brand-black text-white shrink-0">
-        <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10">
+      <aside className="hidden md:flex md:w-64 md:flex-col bg-brand-black text-white shrink-0 border-r-2 border-brand-blue/40">
+        <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent">
           <Logo size={32} />
           <span className="font-semibold text-sm leading-tight">
             Hospital
@@ -71,9 +71,9 @@ export default function Shell({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
+                className={`nav-item flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${
                   active
-                    ? "bg-brand-blue text-white"
+                    ? "bg-brand-blue text-white shadow-[0_2px_10px_rgba(46,109,164,0.5)]"
                     : "text-gray-300 hover:bg-white/10"
                 }`}
               >
@@ -150,7 +150,11 @@ export default function Shell({
         </div>
       )}
 
-      <main className="flex-1 min-w-0 pt-16 md:pt-0 p-4 md:p-8">{children}</main>
+      <main className="flex-1 min-w-0 pt-16 md:pt-0 p-4 md:p-8 overflow-x-hidden">
+        <div key={pathname} className="animate-page">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

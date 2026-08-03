@@ -75,13 +75,13 @@ export default function UsuariosClient() {
                     setEditing(u);
                     setShowForm(true);
                   }}
-                  className="text-sm px-3 py-1.5 rounded-lg border border-brand-blue text-brand-blue"
+                  className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => toggleActive(u)}
-                  className="text-sm px-3 py-1.5 rounded-lg border border-brand-red text-brand-red"
+                  className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
                 >
                   {u.active ? "Desactivar" : "Activar"}
                 </button>

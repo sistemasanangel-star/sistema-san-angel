@@ -82,9 +82,9 @@ export default async function DashboardPage() {
           <Link
             key={s.label}
             href={s.href}
-            className="card p-5 hover:shadow-md transition-shadow flex items-start gap-3"
+            className="card card-interactive p-5 flex items-start gap-3"
           >
-            <span className="text-2xl">{s.icon}</span>
+            <span className="icon-chip">{s.icon}</span>
             <div>
               <p className="text-3xl font-semibold text-brand-blue">
                 {s.value}
@@ -105,13 +105,13 @@ export default async function DashboardPage() {
               </Link>
               <Link
                 href="/informes"
-                className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+                className="px-4 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
               >
                 Ver informes
               </Link>
               <Link
                 href="/solicitudes"
-                className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+                className="px-4 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
               >
                 Revisar solicitudes
               </Link>
@@ -167,7 +167,7 @@ export default async function DashboardPage() {
             </Link>
             <Link
               href="/medicos"
-              className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              className="px-4 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
             >
               + Agregar médico
             </Link>

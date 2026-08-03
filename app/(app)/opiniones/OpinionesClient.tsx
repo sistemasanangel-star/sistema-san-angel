@@ -95,7 +95,7 @@ export default function OpinionesClient() {
                 className={`text-xs px-3 py-1.5 rounded-lg border whitespace-nowrap ${
                   o.atendido
                     ? "border-gray-300 text-gray-500"
-                    : "border-brand-blue text-brand-blue"
+                    : "btn-outline btn-outline-blue"
                 }`}
               >
                 {o.atendido ? "Atendido ✓" : "Marcar atendido"}

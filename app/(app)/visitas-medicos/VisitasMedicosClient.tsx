@@ -107,7 +107,7 @@ export default function VisitasMedicosClient({ role }: { role: string }) {
               </div>
               <button
                 onClick={() => handleDelete(v)}
-                className="text-xs px-3 py-1.5 rounded-lg border border-brand-red text-brand-red whitespace-nowrap"
+                className="text-xs px-3 py-1.5 rounded-lg border btn-outline btn-outline-red whitespace-nowrap"
               >
                 {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
               </button>
@@ -225,7 +225,7 @@ function NewDoctorVisitModal({
               type="button"
               onClick={captureGps}
               disabled={gpsLoading}
-              className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
             >
               {gpsLoading ? "Obteniendo..." : "📍 Obtener ubicación GPS *"}
             </button>
@@ -246,7 +246,7 @@ function NewDoctorVisitModal({
             <button
               type="button"
               onClick={() => setShowSignature(true)}
-              className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
             >
               ✍️ Firma del receptor *
             </button>

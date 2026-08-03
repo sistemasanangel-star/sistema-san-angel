@@ -36,8 +36,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 animate-[fadeIn_300ms_ease]">
-      <div className="card w-full max-w-sm p-8 flex flex-col items-center gap-6">
+    <div
+      className="flex flex-1 items-center justify-center px-4 animate-page"
+      style={{
+        background:
+          "radial-gradient(circle at 20% 20%, rgba(46,109,164,0.14), transparent 45%), radial-gradient(circle at 85% 80%, rgba(59,178,115,0.10), transparent 40%)",
+      }}
+    >
+      <div className="card w-full max-w-sm p-8 flex flex-col items-center gap-6 animate-pop">
         <Logo size={72} />
         <div className="text-center">
           <h1 className="text-xl font-semibold text-brand-black">

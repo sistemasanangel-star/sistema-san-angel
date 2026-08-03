@@ -133,7 +133,7 @@ export default function InformesClient({ isAdmin }: { isAdmin: boolean }) {
           </button>
           <button
             onClick={descargar}
-            className="px-4 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+            className="px-4 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
           >
             Descargar Excel
           </button>

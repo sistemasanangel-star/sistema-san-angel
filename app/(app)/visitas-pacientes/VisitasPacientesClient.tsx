@@ -121,13 +121,13 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => setVisitAdmission(a)}
-                    className="text-sm px-3 py-1.5 rounded-lg border border-brand-blue text-brand-blue"
+                    className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                   >
                     Registrar visita
                   </button>
                   <button
                     onClick={() => darDeAlta(a)}
-                    className="text-sm px-3 py-1.5 rounded-lg border border-brand-red text-brand-red whitespace-nowrap"
+                    className="text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red whitespace-nowrap"
                   >
                     Ya no hay seguimiento
                   </button>
@@ -381,7 +381,7 @@ function NewVisitModal({
           <button
             type="button"
             onClick={captureGps}
-            className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+            className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
           >
             📍 Obtener ubicación GPS
           </button>

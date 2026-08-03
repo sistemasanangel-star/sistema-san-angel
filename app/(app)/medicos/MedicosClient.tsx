@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
-import { CATEGORIAS_LUGAR, categoriaLabel } from "@/lib/constants";
+import { CATEGORIAS_LUGAR, categoriaLabel, categoriaColor, categoriaIcon } from "@/lib/constants";
 
 type Doctor = {
   id: string;
@@ -126,16 +126,29 @@ export default function MedicosClient({ role }: { role: string }) {
         <p className="text-gray-400 text-sm">No hay médicos registrados.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {doctors.map((doc) => (
-            <div key={doc.id} className="card p-4 flex flex-col gap-2">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium text-brand-black">{doc.nombre}</p>
-                  {doc.especialidad && (
-                    <p className="text-xs text-gray-500">{doc.especialidad}</p>
-                  )}
+          {doctors.map((doc) => {
+            const color = categoriaColor(doc.categoria);
+            return (
+            <div key={doc.id} className="card card-interactive p-4 flex flex-col gap-2">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-3">
+                  <span
+                    className="icon-chip"
+                    style={{ background: color.bg }}
+                  >
+                    {categoriaIcon(doc.categoria)}
+                  </span>
+                  <div>
+                    <p className="font-medium text-brand-black">{doc.nombre}</p>
+                    {doc.especialidad && (
+                      <p className="text-xs text-gray-500">{doc.especialidad}</p>
+                    )}
+                  </div>
                 </div>
-                <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-brand-blue font-medium whitespace-nowrap">
+                <span
+                  className="text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap"
+                  style={{ background: color.bg, color: color.text }}
+                >
                   {categoriaLabel(doc.categoria)}
                 </span>
               </div>
@@ -165,19 +178,20 @@ export default function MedicosClient({ role }: { role: string }) {
                     setEditing(doc);
                     setShowForm(true);
                   }}
-                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border border-brand-blue text-brand-blue"
+                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => handleDelete(doc)}
-                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border border-brand-red text-brand-red"
+                  className="flex-1 text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
                 >
                   {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -376,7 +390,7 @@ function DoctorFormModal({
             type="button"
             onClick={captureGps}
             disabled={gpsLoading}
-            className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+            className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
           >
             {gpsLoading ? "Obteniendo..." : "📍 Obtener ubicación GPS"}
           </button>
