@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { doctorId, tipo, descripcion, fotoUrl } = await req.json();
+  const { doctorId, habitacion, tipo, descripcion, fotoUrl } = await req.json();
 
   if (!tipo || !descripcion) {
     return NextResponse.json(
@@ -36,6 +36,7 @@ export async function POST(req: Request) {
   const opinion = await prisma.opinion.create({
     data: {
       doctorId: doctorId || null,
+      habitacion: habitacion || null,
       tipo,
       descripcion,
       fotoUrl: fotoUrl || null,

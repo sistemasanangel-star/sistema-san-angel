@@ -136,6 +136,7 @@ model Opinion {
   id          String   @id @default(cuid())
   doctorId    String?
   doctor      Doctor?  @relation(fields: [doctorId], references: [id])
+  habitacion  String?
   tipo        String
   descripcion String
   fotoUrl     String?

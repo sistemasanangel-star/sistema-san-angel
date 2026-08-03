@@ -9,6 +9,7 @@ type Opinion = {
   fotoUrl: string | null;
   atendido: boolean;
   fecha: string;
+  habitacion: string | null;
   doctor: { nombre: string; perteneceA: string } | null;
 };
 
@@ -77,6 +78,11 @@ export default function OpinionesClient() {
                   </span>
                   {o.doctor && (
                     <span className="text-xs text-gray-500">{o.doctor.perteneceA}</span>
+                  )}
+                  {o.habitacion && (
+                    <span className="text-xs text-gray-500">
+                      Habitación {o.habitacion}
+                    </span>
                   )}
                   <span className="text-xs text-gray-400 ml-auto">
                     {new Date(o.fecha).toLocaleString("es-GT")}
