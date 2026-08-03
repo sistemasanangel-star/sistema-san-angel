@@ -18,15 +18,28 @@ type Visit = {
   doctor: { nombre: string; categoria: string };
 };
 
+function todayInput() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
 export default function VisitasMedicosClient({ role }: { role: string }) {
   const [visits, setVisits] = useState<Visit[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState("");
+  const [dia, setDia] = useState(todayInput());
+  const [verTodas, setVerTodas] = useState(false);
 
   async function load() {
     setLoading(true);
-    const res = await fetch("/api/doctor-visits");
+    const params = new URLSearchParams();
+    if (!verTodas && dia) {
+      params.set("from", `${dia}T00:00:00`);
+      params.set("to", `${dia}T23:59:59`);
+    }
+    const res = await fetch(`/api/doctor-visits?${params.toString()}`);
     const data = await res.json();
     setVisits(data.visits ?? []);
     setLoading(false);
@@ -34,7 +47,8 @@ export default function VisitasMedicosClient({ role }: { role: string }) {
 
   useEffect(() => {
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dia, verTodas]);
 
   async function handleDelete(visit: Visit) {
     if (role === "ADMIN") {
@@ -67,17 +81,41 @@ export default function VisitasMedicosClient({ role }: { role: string }) {
         <div className="card p-3 text-sm text-brand-blue bg-blue-50">{toast}</div>
       )}
 
-      <button
-        onClick={() => setShowForm(true)}
-        className="btn-primary px-4 py-2 text-sm self-start"
-      >
-        + Nueva Visita
-      </button>
+      <div className="flex flex-wrap items-center gap-3 justify-between">
+        <button
+          onClick={() => setShowForm(true)}
+          className="btn-primary px-4 py-2 text-sm self-start"
+        >
+          + Nueva Visita
+        </button>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="date"
+            className="input-field max-w-[160px]"
+            value={dia}
+            disabled={verTodas}
+            onChange={(e) => setDia(e.target.value)}
+          />
+          <button
+            onClick={() => setVerTodas((v) => !v)}
+            className={`text-sm px-3 py-2 rounded-xl border btn-outline ${
+              verTodas ? "btn-outline-blue" : "border-gray-300 text-gray-600"
+            }`}
+          >
+            {verTodas ? "Viendo todas" : "Ver todas"}
+          </button>
+        </div>
+      </div>
 
       {loading ? (
         <p className="text-gray-400 text-sm">Cargando...</p>
       ) : visits.length === 0 ? (
-        <p className="text-gray-400 text-sm">Aún no hay visitas registradas.</p>
+        <p className="text-gray-400 text-sm">
+          {verTodas
+            ? "Aún no hay visitas registradas."
+            : "No hay visitas registradas ese día. Prueba con otra fecha o \"Ver todas\"."}
+        </p>
       ) : (
         <div className="flex flex-col gap-2">
           {visits.map((v) => (

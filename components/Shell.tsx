@@ -14,6 +14,7 @@ const NAV_COMMON = [
 const NAV_VISITADORA_ONLY = [
   { href: "/visitas-medicos", label: "Visitas a médicos", icon: "📋" },
   { href: "/visitas-pacientes", label: "Visitas a pacientes", icon: "🩹" },
+  { href: "/comisiones", label: "Comisiones", icon: "💵" },
   { href: "/jornada", label: "Mi jornada", icon: "📍" },
 ];
 
@@ -24,6 +25,7 @@ const NAV_TAIL_COMMON = [
 
 const NAV_ADMIN_EXTRA = [
   { href: "/mapa", label: "Mapa en vivo", icon: "🗺️" },
+  { href: "/admin/comisiones", label: "Comisiones", icon: "💵" },
   { href: "/opiniones", label: "Opiniones QR", icon: "💬" },
   { href: "/admin/preguntas", label: "Preguntas (visitas)", icon: "❓" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "👥" },

@@ -25,6 +25,8 @@ model User {
   patientAdmisions PatientAdmission[]
   deleteRequests   DeleteToken[]      @relation("TokenRequestedBy")
   locationPings    LocationPing[]
+  commissionsCreated Commission[] @relation("CommissionCreatedBy")
+  commissionsPaid    Commission[] @relation("CommissionPaidBy")
 
   jornadaActiva  Boolean   @default(false)
   ultimaUbicLat  Float?
@@ -62,6 +64,7 @@ model Doctor {
   doctorVisits  DoctorVisit[]
   patientVisits PatientVisit[]
   opinions      Opinion[]
+  commissions   Commission[]
 }
 
 // tipo: TEXTO | SI_NO | OPCION_MULTIPLE | ESCALA | NUMERO
@@ -157,6 +160,32 @@ model DeleteToken {
   token         String?   @unique
   createdAt     DateTime  @default(now())
   resolvedAt    DateTime?
+}
+
+// mes: "YYYY-MM"
+// estado: PENDIENTE | PAGADA
+model Commission {
+  id             String    @id @default(cuid())
+  doctorId       String
+  doctor         Doctor    @relation(fields: [doctorId], references: [id])
+  mes            String
+  montoCobrado   Float
+  porcentaje     Float
+  montoComision  Float
+  estado         String    @default("PENDIENTE")
+  createdById    String
+  createdBy      User      @relation("CommissionCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime  @default(now())
+
+  // Datos de pago (obligatorios al pagar)
+  fechaPago      DateTime?
+  pagadoPorId    String?
+  pagadoPor      User?     @relation("CommissionPaidBy", fields: [pagadoPorId], references: [id])
+  recibidoPor    String?
+  firmaImagen    String?
+  gpsLat         Float?
+  gpsLng         Float?
+  observaciones  String?
 }
 
 model AppSetting {

@@ -32,11 +32,15 @@ type Visit = {
   answers: { valor: string; question: { texto: string } }[];
 };
 
-function todayRange() {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const end = new Date();
-  end.setHours(23, 59, 59, 999);
+function todayInput() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
+function dayRange(dia: string) {
+  const start = new Date(`${dia}T00:00:00`);
+  const end = new Date(`${dia}T23:59:59`);
   return { from: start.toISOString(), to: end.toISOString() };
 }
 
@@ -54,10 +58,11 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
   const [showNewPatient, setShowNewPatient] = useState(false);
   const [visitAdmission, setVisitAdmission] = useState<Admission | null>(null);
   const [toast, setToast] = useState("");
+  const [dia, setDia] = useState(todayInput());
 
   async function load() {
     setLoading(true);
-    const { from, to } = todayRange();
+    const { from, to } = dayRange(dia);
     const [admRes, visitRes] = await Promise.all([
       fetch("/api/patient-admissions?activo=1"),
       fetch(`/api/patient-visits?from=${from}&to=${to}`),
@@ -71,7 +76,10 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
 
   useEffect(() => {
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dia]);
+
+  const esHoy = dia === todayInput();
 
   async function darDeAlta(a: Admission) {
     if (!confirm(`¿Marcar a "${a.paciente}" sin seguimiento (dar de alta)? Ya no aparecerá en la lista activa, pero su historial se conserva.`))
@@ -139,13 +147,33 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
       </div>
 
       <div>
-        <h2 className="font-medium text-brand-black mb-3">Visitas de hoy</h2>
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 className="font-medium text-brand-black">
+            {esHoy ? "Visitas de hoy" : "Visitas del día seleccionado"}
+          </h2>
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              className="input-field max-w-[160px]"
+              value={dia}
+              onChange={(e) => setDia(e.target.value)}
+            />
+            {!esHoy && (
+              <button
+                onClick={() => setDia(todayInput())}
+                className="text-sm px-3 py-2 rounded-xl border btn-outline btn-outline-blue whitespace-nowrap"
+              >
+                Volver a hoy
+              </button>
+            )}
+          </div>
+        </div>
         {loading ? (
           <p className="text-gray-400 text-sm">Cargando...</p>
         ) : todayVisits.length === 0 ? (
           <p className="text-gray-400 text-sm">
-            Aún no hay visitas registradas hoy. El historial completo está disponible en
-            Informes.
+            Aún no hay visitas registradas {esHoy ? "hoy" : "ese día"}. El historial
+            completo está disponible en Informes.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
