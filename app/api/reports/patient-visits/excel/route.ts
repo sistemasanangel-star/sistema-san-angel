@@ -28,6 +28,7 @@ export async function GET(req: Request) {
     include: {
       visitadora: { select: { name: true } },
       doctor: { select: { nombre: true } },
+      admission: { select: { habitacion: true } },
       answers: { include: { question: true } },
     },
     orderBy: { fecha: "desc" },
@@ -46,6 +47,7 @@ export async function GET(req: Request) {
       { header: "Hora", key: "hora", width: 10 },
       { header: "Visitadora", key: "visitadora", width: 20 },
       { header: "Paciente", key: "paciente", width: 22 },
+      { header: "Habitación", key: "habitacion", width: 14 },
       { header: "Médico/Sanatorio asociado", key: "doctor", width: 24 },
       ...questionTexts.map((q, i) => ({ header: q, key: `q${i}`, width: 26 })),
       { header: "GPS", key: "gps", width: 30 },
@@ -56,6 +58,7 @@ export async function GET(req: Request) {
         hora: v.fecha.toLocaleTimeString("es-GT"),
         visitadora: v.visitadora.name,
         paciente: v.paciente,
+        habitacion: v.admission?.habitacion ?? "",
         doctor: v.doctor?.nombre ?? "",
         gps: v.gpsLat != null ? `https://www.google.com/maps?q=${v.gpsLat},${v.gpsLng}` : "",
       };

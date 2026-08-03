@@ -9,7 +9,8 @@ export default async function VisitasPacientesPage() {
         Visitas a pacientes
       </h1>
       <p className="text-gray-500 text-sm mb-6">
-        Registra una visita interactiva y consulta el historial.
+        Pacientes internados por habitación y registro de visitas del día. El
+        historial completo está en Informes.
       </p>
       <VisitasPacientesClient role={user?.role ?? "VISITADORA"} />
     </div>

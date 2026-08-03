@@ -3,6 +3,16 @@
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 
+type Admission = {
+  id: string;
+  paciente: string;
+  habitacion: string;
+  fechaIngreso: string;
+  fechaAlta: string | null;
+  activo: boolean;
+  visitadora: { name: string };
+};
+
 type Question = {
   id: string;
   texto: string;
@@ -18,20 +28,44 @@ type Visit = {
   fecha: string;
   visitadora: { name: string };
   doctor: { nombre: string } | null;
+  admission: { habitacion: string } | null;
   answers: { valor: string; question: { texto: string } }[];
 };
 
+function todayRange() {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+  return { from: start.toISOString(), to: end.toISOString() };
+}
+
+function diasInternado(fechaIngreso: string) {
+  const days = Math.floor(
+    (Date.now() - new Date(fechaIngreso).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  return days <= 0 ? "hoy" : `${days} día(s)`;
+}
+
 export default function VisitasPacientesClient({ role }: { role: string }) {
-  const [visits, setVisits] = useState<Visit[]>([]);
+  const [admissions, setAdmissions] = useState<Admission[]>([]);
+  const [todayVisits, setTodayVisits] = useState<Visit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showNewPatient, setShowNewPatient] = useState(false);
+  const [visitAdmission, setVisitAdmission] = useState<Admission | null>(null);
   const [toast, setToast] = useState("");
 
   async function load() {
     setLoading(true);
-    const res = await fetch("/api/patient-visits");
-    const data = await res.json();
-    setVisits(data.visits ?? []);
+    const { from, to } = todayRange();
+    const [admRes, visitRes] = await Promise.all([
+      fetch("/api/patient-admissions?activo=1"),
+      fetch(`/api/patient-visits?from=${from}&to=${to}`),
+    ]);
+    const admData = await admRes.json();
+    const visitData = await visitRes.json();
+    setAdmissions(admData.admissions ?? []);
+    setTodayVisits(visitData.visits ?? []);
     setLoading(false);
   }
 
@@ -39,82 +73,127 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
     load();
   }, []);
 
-  async function handleDelete(visit: Visit) {
-    if (role === "ADMIN") {
-      if (!confirm(`¿Eliminar la visita de "${visit.paciente}"?`)) return;
-      const res = await fetch(`/api/patient-visits/${visit.id}`, { method: "DELETE" });
-      if (res.ok) {
-        setToast("Visita eliminada.");
-        load();
-      }
+  async function darDeAlta(a: Admission) {
+    if (!confirm(`¿Marcar a "${a.paciente}" sin seguimiento (dar de alta)? Ya no aparecerá en la lista activa, pero su historial se conserva.`))
       return;
-    }
-    const res = await fetch("/api/tokens", {
-      method: "POST",
+    await fetch(`/api/patient-admissions/${a.id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        targetType: "PATIENT_VISIT",
-        targetId: visit.id,
-        targetLabel: `Visita a paciente: ${visit.paciente}`,
-      }),
+      body: JSON.stringify({ action: "alta" }),
     });
-    const data = await res.json();
-    setToast(res.ok ? "Solicitud de eliminación enviada." : data.error);
+    setToast(`${a.paciente} marcado como sin seguimiento.`);
+    load();
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {toast && (
         <div className="card p-3 text-sm text-brand-blue bg-blue-50">{toast}</div>
       )}
 
-      <button
-        onClick={() => setShowForm(true)}
-        className="btn-primary px-4 py-2 text-sm self-start"
-      >
-        + Nueva visita a paciente
-      </button>
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-medium text-brand-black">Pacientes internados</h2>
+          <button
+            onClick={() => setShowNewPatient(true)}
+            className="btn-primary px-4 py-2 text-sm"
+          >
+            + Nuevo paciente
+          </button>
+        </div>
 
-      {loading ? (
-        <p className="text-gray-400 text-sm">Cargando...</p>
-      ) : visits.length === 0 ? (
-        <p className="text-gray-400 text-sm">Aún no hay visitas registradas.</p>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {visits.map((v) => (
-            <div key={v.id} className="card p-4">
-              <div className="flex items-start justify-between gap-3">
+        {loading ? (
+          <p className="text-gray-400 text-sm">Cargando...</p>
+        ) : admissions.length === 0 ? (
+          <p className="text-gray-400 text-sm">No hay pacientes internados activos.</p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {admissions.map((a) => (
+              <div key={a.id} className="card p-4 flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-medium text-brand-black">{v.paciente}</p>
+                  <p className="font-medium text-brand-black">{a.paciente}</p>
                   <p className="text-xs text-gray-500">
-                    {new Date(v.fecha).toLocaleString("es-GT")} · {v.visitadora.name}
-                    {v.doctor ? ` · ${v.doctor.nombre}` : ""}
+                    Habitación {a.habitacion} · Ingresó{" "}
+                    {new Date(a.fechaIngreso).toLocaleString("es-GT")} ·{" "}
+                    {diasInternado(a.fechaIngreso)} internado
                   </p>
                 </div>
-                <button
-                  onClick={() => handleDelete(v)}
-                  className="text-xs px-3 py-1.5 rounded-lg border border-brand-red text-brand-red whitespace-nowrap"
-                >
-                  {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
-                </button>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => setVisitAdmission(a)}
+                    className="text-sm px-3 py-1.5 rounded-lg border border-brand-blue text-brand-blue"
+                  >
+                    Registrar visita
+                  </button>
+                  <button
+                    onClick={() => darDeAlta(a)}
+                    className="text-sm px-3 py-1.5 rounded-lg border border-brand-red text-brand-red whitespace-nowrap"
+                  >
+                    Ya no hay seguimiento
+                  </button>
+                </div>
               </div>
-              <div className="mt-2 flex flex-col gap-1">
-                {v.answers.map((a, i) => (
-                  <p key={i} className="text-xs text-gray-600">
-                    <span className="text-gray-400">{a.question.texto}:</span> {a.valor}
-                  </p>
-                ))}
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="font-medium text-brand-black mb-3">Visitas de hoy</h2>
+        {loading ? (
+          <p className="text-gray-400 text-sm">Cargando...</p>
+        ) : todayVisits.length === 0 ? (
+          <p className="text-gray-400 text-sm">
+            Aún no hay visitas registradas hoy. El historial completo está disponible en
+            Informes.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {todayVisits.map((v) => (
+              <div key={v.id} className="card p-4">
+                <p className="font-medium text-brand-black">
+                  {v.paciente}
+                  {v.admission && (
+                    <span className="text-xs text-gray-500 font-normal">
+                      {" "}
+                      · Habitación {v.admission.habitacion}
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {new Date(v.fecha).toLocaleString("es-GT")} · {v.visitadora.name}
+                  {v.doctor ? ` · ${v.doctor.nombre}` : ""}
+                </p>
+                <div className="mt-2 flex flex-col gap-1">
+                  {v.answers.map((a, i) => (
+                    <p key={i} className="text-xs text-gray-600">
+                      <span className="text-gray-400">{a.question.texto}:</span> {a.valor}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {showNewPatient && (
+        <NewPatientModal
+          onClose={() => setShowNewPatient(false)}
+          onSaved={(admission) => {
+            setShowNewPatient(false);
+            load();
+            setVisitAdmission(admission);
+          }}
+        />
       )}
 
-      {showForm && (
+      {visitAdmission && (
         <NewVisitModal
-          onClose={() => setShowForm(false)}
+          admission={visitAdmission}
+          onClose={() => setVisitAdmission(null)}
           onSaved={() => {
-            setShowForm(false);
+            setVisitAdmission(null);
             load();
           }}
         />
@@ -123,16 +202,107 @@ export default function VisitasPacientesClient({ role }: { role: string }) {
   );
 }
 
-function NewVisitModal({
+function NewPatientModal({
   onClose,
   onSaved,
 }: {
+  onClose: () => void;
+  onSaved: (admission: Admission) => void;
+}) {
+  const [paciente, setPaciente] = useState("");
+  const [habitacion, setHabitacion] = useState("");
+  const [fechaIngreso, setFechaIngreso] = useState(() => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
+  });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!paciente || !habitacion) {
+      setError("Paciente y habitación son obligatorios");
+      return;
+    }
+    setSaving(true);
+    const res = await fetch("/api/patient-admissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paciente, habitacion, fechaIngreso }),
+    });
+    setSaving(false);
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error ?? "Error al guardar");
+      return;
+    }
+    const data = await res.json();
+    onSaved(data.admission);
+  }
+
+  return (
+    <Modal title="Nuevo paciente internado" onClose={onClose}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <div>
+          <label className="text-sm font-medium">Paciente *</label>
+          <input
+            className="input-field mt-1"
+            value={paciente}
+            onChange={(e) => setPaciente(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Habitación *</label>
+          <input
+            className="input-field mt-1"
+            value={habitacion}
+            onChange={(e) => setHabitacion(e.target.value)}
+            placeholder="Ej. 204-B"
+            required
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Día y hora de ingreso</label>
+          <input
+            type="datetime-local"
+            className="input-field mt-1"
+            value={fechaIngreso}
+            onChange={(e) => setFechaIngreso(e.target.value)}
+          />
+        </div>
+
+        {error && <p className="text-sm text-brand-red">{error}</p>}
+
+        <div className="flex justify-end gap-2 mt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-sm rounded-xl border border-gray-300"
+          >
+            Cancelar
+          </button>
+          <button type="submit" disabled={saving} className="btn-primary px-4 py-2 text-sm">
+            {saving ? "Guardando..." : "Guardar y continuar"}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+function NewVisitModal({
+  admission,
+  onClose,
+  onSaved,
+}: {
+  admission: Admission;
   onClose: () => void;
   onSaved: () => void;
 }) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [paciente, setPaciente] = useState("");
   const [doctorId, setDoctorId] = useState("");
   const [gps, setGps] = useState<{ lat: number; lng: number } | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -158,16 +328,12 @@ function NewVisitModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!paciente) {
-      setError("El nombre del paciente es obligatorio");
-      return;
-    }
     setSaving(true);
     const res = await fetch("/api/patient-visits", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        paciente,
+        admissionId: admission.id,
         doctorId: doctorId || null,
         gpsLat: gps?.lat,
         gpsLng: gps?.lng,
@@ -187,17 +353,12 @@ function NewVisitModal({
   }
 
   return (
-    <Modal title="Nueva visita a paciente" onClose={onClose} wide>
+    <Modal
+      title={`Nueva visita — ${admission.paciente} (Hab. ${admission.habitacion})`}
+      onClose={onClose}
+      wide
+    >
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <div>
-          <label className="text-sm font-medium">Paciente *</label>
-          <input
-            className="input-field mt-1"
-            value={paciente}
-            onChange={(e) => setPaciente(e.target.value)}
-            required
-          />
-        </div>
         <div>
           <label className="text-sm font-medium">
             Médico / sanatorio asociado (opcional)

@@ -6,9 +6,9 @@ const PING_INTERVAL_MS = 15000;
 
 export default function JornadaClient() {
   const [active, setActive] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [lastSent, setLastSent] = useState<Date | null>(null);
   const [error, setError] = useState("");
-  const watchRef = useRef<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   function sendPing() {
@@ -31,6 +31,12 @@ export default function JornadaClient() {
     );
   }
 
+  function beginSharing() {
+    sendPing();
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(sendPing, PING_INTERVAL_MS);
+  }
+
   async function start() {
     setError("");
     await fetch("/api/location/jornada", {
@@ -39,8 +45,7 @@ export default function JornadaClient() {
       body: JSON.stringify({ action: "start" }),
     });
     setActive(true);
-    sendPing();
-    intervalRef.current = setInterval(sendPing, PING_INTERVAL_MS);
+    beginSharing();
   }
 
   async function stop() {
@@ -55,36 +60,72 @@ export default function JornadaClient() {
   }
 
   useEffect(() => {
+    fetch("/api/location/status")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.active) {
+          setActive(true);
+          if (data.lastSent) setLastSent(new Date(data.lastSent));
+          beginSharing();
+        }
+      })
+      .finally(() => setChecking(false));
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="card p-6 flex flex-col items-center gap-4 text-center">
-      <div
-        className={`w-4 h-4 rounded-full ${active ? "bg-brand-green animate-pulse" : "bg-gray-300"}`}
-      />
-      <p className="font-medium text-brand-black">
-        {active ? "Jornada activa — compartiendo ubicación" : "Jornada no iniciada"}
-      </p>
-      {lastSent && (
-        <p className="text-xs text-gray-500">
-          Última actualización: {lastSent.toLocaleTimeString("es-GT")}
-        </p>
-      )}
-      {error && <p className="text-sm text-brand-red">{error}</p>}
+    <div className="flex flex-col gap-4">
+      <div className="card p-6 flex flex-col items-center gap-4 text-center">
+        {checking ? (
+          <p className="text-gray-400 text-sm">Verificando estado...</p>
+        ) : (
+          <>
+            <div
+              className={`w-4 h-4 rounded-full ${
+                active ? "bg-brand-green animate-pulse" : "bg-gray-300"
+              }`}
+            />
+            <p className="font-medium text-brand-black">
+              {active ? "Jornada activa — compartiendo ubicación" : "Jornada no iniciada"}
+            </p>
+            {lastSent && (
+              <p className="text-xs text-gray-500">
+                Última actualización: {lastSent.toLocaleTimeString("es-GT")}
+              </p>
+            )}
+            {error && <p className="text-sm text-brand-red">{error}</p>}
 
-      {active ? (
-        <button onClick={stop} className="btn-danger px-6 py-2.5 font-medium">
-          Finalizar jornada
-        </button>
-      ) : (
-        <button onClick={start} className="btn-primary px-6 py-2.5 font-medium">
-          Iniciar jornada
-        </button>
-      )}
+            {active ? (
+              <button onClick={stop} className="btn-danger px-6 py-2.5 font-medium">
+                Finalizar jornada
+              </button>
+            ) : (
+              <button onClick={start} className="btn-primary px-6 py-2.5 font-medium">
+                Iniciar jornada
+              </button>
+            )}
+          </>
+        )}
+      </div>
+
+      <div className="card p-4 text-xs text-gray-500 leading-relaxed">
+        <p className="font-medium text-gray-600 mb-1">Cómo funciona</p>
+        <p>
+          Mientras esta pestaña esté abierta con la jornada activa, tu ubicación se
+          envía cada 15 segundos. Si cierras el navegador o bloqueas el teléfono, el
+          envío se detiene y, a los 10 minutos sin señal, el sistema te marca
+          automáticamente como inactiva en el mapa del administrador.
+        </p>
+        <p className="mt-2">
+          Al volver a entrar, si tu jornada seguía activa en el sistema, el envío se
+          reanuda solo. Si ya se marcó inactiva por inactividad, solo dale
+          &quot;Iniciar jornada&quot; de nuevo.
+        </p>
+      </div>
     </div>
   );
 }

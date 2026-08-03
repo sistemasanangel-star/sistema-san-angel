@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
   const body = await req.json();
-  const { nombre, especialidad, categoria, perteneceA, direccion, gpsLat, gpsLng, telefono, notas } = body;
+  const { nombre, especialidad, categoria, perteneceA, direccion, gpsLat, gpsLng, telefono, horarioAtencion, notas } = body;
 
   if (!nombre || !categoria || !perteneceA) {
     return NextResponse.json(
@@ -60,6 +60,7 @@ export async function POST(req: Request) {
       gpsLat,
       gpsLng,
       telefono: telefono || null,
+      horarioAtencion: horarioAtencion || null,
       notas: notas || null,
       createdById: user.id,
     },

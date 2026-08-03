@@ -14,6 +14,7 @@ type Doctor = {
   gpsLat: number | null;
   gpsLng: number | null;
   telefono: string | null;
+  horarioAtencion: string | null;
   notas: string | null;
 };
 
@@ -146,6 +147,9 @@ export default function MedicosClient({ role }: { role: string }) {
               {doc.telefono && (
                 <p className="text-xs text-gray-500">📞 {doc.telefono}</p>
               )}
+              {doc.horarioAtencion && (
+                <p className="text-xs text-gray-500">🕐 {doc.horarioAtencion}</p>
+              )}
               <p className="text-xs">
                 {doc.gpsLat != null ? (
                   <span className="badge-ok px-2 py-0.5 rounded-full">GPS ✓</span>
@@ -252,6 +256,7 @@ function DoctorFormModal({
   const [perteneceA, setPerteneceA] = useState(doctor?.perteneceA ?? "");
   const [direccion, setDireccion] = useState(doctor?.direccion ?? "");
   const [telefono, setTelefono] = useState(doctor?.telefono ?? "");
+  const [horarioAtencion, setHorarioAtencion] = useState(doctor?.horarioAtencion ?? "");
   const [notas, setNotas] = useState(doctor?.notas ?? "");
   const [gps, setGps] = useState<{ lat: number; lng: number } | null>(
     doctor?.gpsLat != null && doctor?.gpsLng != null
@@ -301,6 +306,7 @@ function DoctorFormModal({
       perteneceA,
       direccion,
       telefono,
+      horarioAtencion,
       notas,
       gpsLat: gps.lat,
       gpsLng: gps.lng,
@@ -384,6 +390,15 @@ function DoctorFormModal({
               className="input-field mt-1"
               value={direccion}
               onChange={(e) => setDireccion(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Horario de atención</label>
+            <input
+              className="input-field mt-1"
+              value={horarioAtencion}
+              onChange={(e) => setHorarioAtencion(e.target.value)}
+              placeholder="Ej. Lun-Vie 8:00-17:00"
             />
           </div>
         </div>

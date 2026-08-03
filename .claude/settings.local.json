@@ -19,7 +19,8 @@
       "Bash(gh auth *)",
       "Bash(gh --version)",
       "PowerShell(Get-Command gh -ErrorAction SilentlyContinue)",
-      "PowerShell(gh --version 2>&1)"
+      "PowerShell(gh --version 2>&1)",
+      "Bash(mkdir -p \"/c/Users/aguil/Documents/san angel visitadora/app/api/patient-admissions/[id]\")"
     ]
   }
 }

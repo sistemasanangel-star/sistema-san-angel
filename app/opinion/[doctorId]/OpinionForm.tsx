@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { useEffect, useState } from "react";
 
 export default function OpinionForm({ doctorId }: { doctorId: string | null }) {
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((d) => setWhatsappNumber(d.whatsappNumber ?? ""));
+  }, []);
+
   const [tipo, setTipo] = useState<"POSITIVA" | "NEGATIVA" | "">("");
   const [descripcion, setDescripcion] = useState("");
   const [foto, setFoto] = useState<string | null>(null);
@@ -48,7 +55,7 @@ export default function OpinionForm({ doctorId }: { doctorId: string | null }) {
     const text = encodeURIComponent(lines.join("\n"));
 
     setTimeout(() => {
-      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+      window.location.href = `https://wa.me/${whatsappNumber}?text=${text}`;
     }, 600);
   }
 

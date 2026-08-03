@@ -10,10 +10,12 @@ export async function GET(req: Request) {
   const from = searchParams.get("from");
   const to = searchParams.get("to");
   const visitadoraId = searchParams.get("visitadoraId");
+  const admissionId = searchParams.get("admissionId");
 
   const where: Record<string, unknown> = {};
   if (user.role !== "ADMIN") where.visitadoraId = user.id;
   else if (visitadoraId) where.visitadoraId = visitadoraId;
+  if (admissionId) where.admissionId = admissionId;
 
   if (from || to) {
     where.fecha = {
@@ -27,6 +29,7 @@ export async function GET(req: Request) {
     include: {
       visitadora: { select: { name: true } },
       doctor: { select: { nombre: true } },
+      admission: { select: { habitacion: true } },
       answers: { include: { question: true } },
     },
     orderBy: { fecha: "desc" },
@@ -39,14 +42,20 @@ export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const { paciente, doctorId, gpsLat, gpsLng, answers } = await req.json();
-  if (!paciente) {
-    return NextResponse.json({ error: "El nombre del paciente es obligatorio" }, { status: 400 });
+  const { admissionId, doctorId, gpsLat, gpsLng, answers } = await req.json();
+  if (!admissionId) {
+    return NextResponse.json({ error: "Selecciona un paciente internado" }, { status: 400 });
+  }
+
+  const admission = await prisma.patientAdmission.findUnique({ where: { id: admissionId } });
+  if (!admission) {
+    return NextResponse.json({ error: "Paciente no encontrado" }, { status: 404 });
   }
 
   const visit = await prisma.patientVisit.create({
     data: {
-      paciente,
+      paciente: admission.paciente,
+      admissionId,
       doctorId: doctorId || null,
       gpsLat: gpsLat ?? null,
       gpsLng: gpsLng ?? null,

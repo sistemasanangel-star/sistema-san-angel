@@ -21,6 +21,7 @@ const NAV_ADMIN_EXTRA = [
   { href: "/opiniones", label: "Opiniones QR", icon: "💬" },
   { href: "/admin/preguntas", label: "Preguntas (visitas)", icon: "❓" },
   { href: "/admin/usuarios", label: "Usuarios", icon: "👥" },
+  { href: "/admin/configuracion", label: "Configuración", icon: "⚙️" },
 ];
 
 export default function Shell({

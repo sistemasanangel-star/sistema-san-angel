@@ -11,7 +11,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await req.json();
-  const { nombre, especialidad, categoria, perteneceA, direccion, gpsLat, gpsLng, telefono, notas } = body;
+  const { nombre, especialidad, categoria, perteneceA, direccion, gpsLat, gpsLng, telefono, horarioAtencion, notas } = body;
 
   const doctor = await prisma.doctor.update({
     where: { id },
@@ -24,6 +24,7 @@ export async function PATCH(
       ...(gpsLat !== undefined ? { gpsLat } : {}),
       ...(gpsLng !== undefined ? { gpsLng } : {}),
       ...(telefono !== undefined ? { telefono } : {}),
+      ...(horarioAtencion !== undefined ? { horarioAtencion } : {}),
       ...(notas !== undefined ? { notas } : {}),
     },
   });

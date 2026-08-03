@@ -24,6 +24,7 @@ type PatientVisitRow = {
   gpsLng: number | null;
   visitadora: { name: string };
   doctor: { nombre: string } | null;
+  admission: { habitacion: string } | null;
   answers: { valor: string; question: { texto: string } }[];
 };
 
@@ -196,6 +197,7 @@ export default function InformesClient({ isAdmin }: { isAdmin: boolean }) {
                 <th className="py-2 pr-3">Fecha</th>
                 <th className="py-2 pr-3">Visitadora</th>
                 <th className="py-2 pr-3">Paciente</th>
+                <th className="py-2 pr-3">Habitación</th>
                 <th className="py-2 pr-3">Médico asociado</th>
                 <th className="py-2 pr-3">Respuestas</th>
               </tr>
@@ -208,6 +210,7 @@ export default function InformesClient({ isAdmin }: { isAdmin: boolean }) {
                   </td>
                   <td className="py-2 pr-3">{r.visitadora.name}</td>
                   <td className="py-2 pr-3">{r.paciente}</td>
+                  <td className="py-2 pr-3">{r.admission?.habitacion ?? "—"}</td>
                   <td className="py-2 pr-3">{r.doctor?.nombre ?? "—"}</td>
                   <td className="py-2 pr-3">
                     {r.answers.map((a, i) => (
@@ -220,7 +223,7 @@ export default function InformesClient({ isAdmin }: { isAdmin: boolean }) {
               ))}
               {patientRows.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-4 text-center text-gray-400">
+                  <td colSpan={6} className="py-4 text-center text-gray-400">
                     Sin resultados para los filtros seleccionados.
                   </td>
                 </tr>

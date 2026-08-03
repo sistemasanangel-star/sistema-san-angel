@@ -19,11 +19,12 @@ model User {
   createdAt    DateTime @default(now())
 
   sessions       Session[]
-  doctors        Doctor[]      @relation("DoctorCreatedBy")
-  doctorVisits   DoctorVisit[]
-  patientVisits  PatientVisit[]
-  deleteRequests DeleteToken[] @relation("TokenRequestedBy")
-  locationPings  LocationPing[]
+  doctors          Doctor[]           @relation("DoctorCreatedBy")
+  doctorVisits     DoctorVisit[]
+  patientVisits    PatientVisit[]
+  patientAdmisions PatientAdmission[]
+  deleteRequests   DeleteToken[]      @relation("TokenRequestedBy")
+  locationPings    LocationPing[]
 
   jornadaActiva  Boolean   @default(false)
   ultimaUbicLat  Float?
@@ -51,6 +52,7 @@ model Doctor {
   gpsLat       Float?
   gpsLng       Float?
   telefono     String?
+  horarioAtencion String?
   notas        String?
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -75,14 +77,30 @@ model PatientVisitQuestion {
   answers PatientVisitAnswer[]
 }
 
+model PatientAdmission {
+  id            String    @id @default(cuid())
+  paciente      String
+  habitacion    String
+  fechaIngreso  DateTime  @default(now())
+  fechaAlta     DateTime?
+  activo        Boolean   @default(true)
+  visitadoraId  String
+  visitadora    User      @relation(fields: [visitadoraId], references: [id])
+  createdAt     DateTime  @default(now())
+
+  visitas PatientVisit[]
+}
+
 model PatientVisit {
-  id           String   @id @default(cuid())
+  id           String           @id @default(cuid())
   paciente     String
-  fecha        DateTime @default(now())
+  fecha        DateTime         @default(now())
   visitadoraId String
-  visitadora   User     @relation(fields: [visitadoraId], references: [id])
+  visitadora   User             @relation(fields: [visitadoraId], references: [id])
   doctorId     String?
-  doctor       Doctor?  @relation(fields: [doctorId], references: [id])
+  doctor       Doctor?          @relation(fields: [doctorId], references: [id])
+  admissionId  String
+  admission    PatientAdmission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
   gpsLat       Float?
   gpsLng       Float?
 
@@ -138,6 +156,11 @@ model DeleteToken {
   token         String?   @unique
   createdAt     DateTime  @default(now())
   resolvedAt    DateTime?
+}
+
+model AppSetting {
+  key   String @id
+  value String
 }
 
 model LocationPing {
