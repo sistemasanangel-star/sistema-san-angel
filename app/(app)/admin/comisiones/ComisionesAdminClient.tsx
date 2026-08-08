@@ -13,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { Wallet, Percent, CheckCircle2, Clock } from "lucide-react";
 
 type Doctor = { id: string; nombre: string; perteneceA: string };
 
@@ -121,25 +122,41 @@ export default function ComisionesAdminClient() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="card p-3 sm:p-5 relative overflow-hidden">
-          <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#2E6DA4" }} />
-          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#2E6DA4" }}>{money(totales.montoCobrado)}</p>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">Total cobrado</p>
+        <div className="card p-3 sm:p-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
+          <span className="icon-chip">
+            <Wallet size={17} strokeWidth={1.75} />
+          </span>
+          <div>
+            <p className="text-lg sm:text-2xl font-semibold text-brand-black">{money(totales.montoCobrado)}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Total cobrado</p>
+          </div>
         </div>
-        <div className="card p-3 sm:p-5 relative overflow-hidden">
-          <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#7C3AED" }} />
-          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#7C3AED" }}>{money(totales.montoComision)}</p>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">Total comisión</p>
+        <div className="card p-3 sm:p-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
+          <span className="icon-chip">
+            <Percent size={17} strokeWidth={1.75} />
+          </span>
+          <div>
+            <p className="text-lg sm:text-2xl font-semibold text-brand-black">{money(totales.montoComision)}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Total comisión</p>
+          </div>
         </div>
-        <div className="card p-3 sm:p-5 relative overflow-hidden">
-          <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#279257" }} />
-          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#279257" }}>{money(totales.pagado)}</p>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">Pagado</p>
+        <div className="card p-3 sm:p-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
+          <span className="icon-chip" style={{ background: "rgba(59,178,115,0.12)", color: "#1e8a53" }}>
+            <CheckCircle2 size={17} strokeWidth={1.75} />
+          </span>
+          <div>
+            <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#1e8a53" }}>{money(totales.pagado)}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Pagado</p>
+          </div>
         </div>
-        <div className="card p-3 sm:p-5 relative overflow-hidden">
-          <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#B45309" }} />
-          <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#B45309" }}>{money(totales.pendiente)}</p>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">Pendiente</p>
+        <div className="card p-3 sm:p-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3">
+          <span className="icon-chip" style={{ background: "rgba(228,87,76,0.1)", color: "#c8443a" }}>
+            <Clock size={17} strokeWidth={1.75} />
+          </span>
+          <div>
+            <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#c8443a" }}>{money(totales.pendiente)}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Pendiente</p>
+          </div>
         </div>
       </div>
 

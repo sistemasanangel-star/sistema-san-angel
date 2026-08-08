@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import SignatureCanvas from "@/components/SignatureCanvas";
+import { DollarSign, MapPin, PenLine } from "lucide-react";
 
 type Commission = {
   id: string;
@@ -66,14 +67,10 @@ export default function ComisionesClient() {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {pendientes.map((c) => (
-              <div key={c.id} className="card card-interactive p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 relative overflow-hidden">
-                <span className="absolute top-0 left-0 right-0 h-1" style={{ background: "#B45309" }} />
+              <div key={c.id} className="card card-interactive p-3 sm:p-4 flex flex-col gap-2 sm:gap-3">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <span
-                    className="icon-chip"
-                    style={{ background: "#FEF3E2", width: "2rem", height: "2rem", fontSize: "1rem" }}
-                  >
-                    💵
+                  <span className="icon-chip" style={{ width: "2rem", height: "2rem" }}>
+                    <DollarSign size={16} strokeWidth={1.75} />
                   </span>
                   <div className="min-w-0">
                     <p className="font-medium text-brand-black text-sm sm:text-base truncate">
@@ -83,7 +80,7 @@ export default function ComisionesClient() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 capitalize">{mesLabel(c.mes)}</p>
-                <p className="text-lg sm:text-2xl font-semibold" style={{ color: "#B45309" }}>
+                <p className="text-lg sm:text-2xl font-semibold text-brand-black">
                   {money(c.montoComision)}
                 </p>
                 <p className="text-xs text-gray-400">
@@ -231,9 +228,9 @@ function PagarComisionModal({
               type="button"
               onClick={captureGps}
               disabled={gpsLoading}
-              className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-brand-blue text-brand-blue"
             >
-              {gpsLoading ? "Obteniendo..." : "📍 Obtener ubicación GPS *"}
+              <MapPin size={14} /> {gpsLoading ? "Obteniendo..." : "Obtener ubicación GPS *"}
             </button>
             {gps && <span className="badge-ok text-xs px-2 py-1 rounded-full">GPS ✓</span>}
           </div>
@@ -242,9 +239,9 @@ function PagarComisionModal({
             <button
               type="button"
               onClick={() => setShowSignature(true)}
-              className="px-3 py-2 text-sm rounded-xl border border-brand-blue text-brand-blue"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-brand-blue text-brand-blue"
             >
-              ✍️ Firma de quien recibe *
+              <PenLine size={14} /> Firma de quien recibe *
             </button>
             {firma && <span className="badge-ok text-xs px-2 py-1 rounded-full">Firma ✓</span>}
           </div>

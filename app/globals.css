@@ -1,20 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #eef2f6;
+  --background: #f6f7f9;
   --foreground: #1a1a1a;
   --brand-blue: #2e6da4;
   --brand-blue-dark: #24557f;
-  --brand-blue-light: #eaf2fa;
+  --brand-blue-light: #eaf1f8;
   --brand-black: #1a1a1a;
   --brand-white: #ffffff;
-  --brand-gray: #eef2f6;
+  --brand-gray: #f6f7f9;
   --brand-green: #3bb273;
   --brand-red: #e4574c;
-  --accent-purple: #8b5cf6;
-  --accent-teal: #14b8a6;
-  --accent-amber: #f59e0b;
-  --accent-pink: #ec4899;
+  --border-color: #e5e7eb;
+  --text-muted: #6b7280;
 }
 
 @theme inline {
@@ -33,91 +31,85 @@
 
 body {
   background: var(--background);
-  background-image: radial-gradient(circle at 100% 0%, rgba(46, 109, 164, 0.06), transparent 40%);
-  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
 .card {
   background: var(--brand-white);
-  border-radius: 1.25rem;
-  border: 1px solid rgba(26, 26, 26, 0.05);
-  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.05);
-  transition: box-shadow 220ms ease, transform 220ms ease, border-color 220ms ease;
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+  transition: box-shadow 160ms ease, border-color 160ms ease;
 }
 
 a.card:hover,
 button.card:hover,
 .card-interactive:hover {
-  box-shadow: 0 4px 10px rgba(26, 26, 26, 0.06), 0 16px 32px rgba(46, 109, 164, 0.12);
-  transform: translateY(-3px);
-  border-color: rgba(46, 109, 164, 0.18);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+  border-color: #c7d5e2;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-dark));
+  background: var(--brand-blue);
   color: white;
-  border-radius: 0.85rem;
-  box-shadow: 0 2px 8px rgba(46, 109, 164, 0.28);
-  transition: box-shadow 180ms ease, transform 150ms ease, filter 180ms ease;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  transition: background-color 150ms ease, box-shadow 150ms ease;
 }
 .btn-primary:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 4px 14px rgba(46, 109, 164, 0.38);
-  transform: translateY(-1px);
+  background: var(--brand-blue-dark);
 }
 .btn-primary:active {
-  transform: translateY(0) scale(0.98);
+  background: #1d4a6d;
 }
 .btn-primary:disabled {
   background: #a9bfd1;
   box-shadow: none;
   cursor: not-allowed;
-  transform: none;
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, var(--brand-red), #c8443a);
+  background: var(--brand-red);
   color: white;
-  border-radius: 0.85rem;
-  box-shadow: 0 2px 8px rgba(228, 87, 76, 0.28);
-  transition: box-shadow 180ms ease, transform 150ms ease, filter 180ms ease;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  transition: background-color 150ms ease;
 }
 .btn-danger:hover {
-  filter: brightness(1.06);
-  box-shadow: 0 4px 14px rgba(228, 87, 76, 0.38);
-  transform: translateY(-1px);
-}
-.btn-danger:active {
-  transform: translateY(0) scale(0.98);
+  background: #c8443a;
 }
 
 .input-field {
-  border: 1.5px solid #dde3ea;
-  border-radius: 0.85rem;
-  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.8rem;
   background: white;
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
   width: 100%;
 }
 .input-field:hover {
-  border-color: #c3cdd8;
+  border-color: #c7d0da;
 }
 .input-field:focus {
   outline: none;
   border-color: var(--brand-blue);
-  box-shadow: 0 0 0 3px rgba(46, 109, 164, 0.14);
+  box-shadow: 0 0 0 3px rgba(46, 109, 164, 0.12);
 }
 
 .badge-ok {
-  background: rgba(59, 178, 115, 0.14);
-  color: #279257;
+  background: rgba(59, 178, 115, 0.12);
+  color: #1e8a53;
   font-weight: 600;
 }
 .badge-pending {
-  background: rgba(228, 87, 76, 0.14);
+  background: rgba(228, 87, 76, 0.12);
   color: #c8443a;
+  font-weight: 600;
+}
+.badge-neutral {
+  background: var(--brand-blue-light);
+  color: var(--brand-blue);
   font-weight: 600;
 }
 
@@ -125,41 +117,35 @@ button.card:hover,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.85rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
   background: var(--brand-blue-light);
-  font-size: 1.25rem;
+  color: var(--brand-blue);
   flex-shrink: 0;
-  transition: transform 220ms ease;
-}
-.card-interactive:hover .icon-chip,
-a.card:hover .icon-chip {
-  transform: scale(1.08) rotate(-4deg);
 }
 
 .btn-outline {
-  border-radius: 0.85rem;
-  transition: background-color 180ms ease, border-color 180ms ease, transform 150ms ease, color 180ms ease;
-}
-.btn-outline:hover {
-  transform: translateY(-1px);
+  border-radius: 0.75rem;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 .btn-outline-blue {
-  border: 1.5px solid var(--brand-blue);
+  border: 1px solid var(--border-color);
   color: var(--brand-blue);
+  background: white;
 }
 .btn-outline-blue:hover {
-  background: var(--brand-blue);
-  color: white;
+  background: var(--brand-blue-light);
+  border-color: var(--brand-blue);
 }
 .btn-outline-red {
-  border: 1.5px solid var(--brand-red);
+  border: 1px solid var(--border-color);
   color: var(--brand-red);
+  background: white;
 }
 .btn-outline-red:hover {
-  background: var(--brand-red);
-  color: white;
+  background: rgba(228, 87, 76, 0.08);
+  border-color: var(--brand-red);
 }
 
 .link-hover {
@@ -170,17 +156,14 @@ a.card:hover .icon-chip {
 }
 
 .nav-item {
-  transition: background-color 180ms ease, color 180ms ease, transform 150ms ease;
-}
-.nav-item:hover {
-  transform: translateX(2px);
+  transition: background-color 140ms ease, color 140ms ease;
 }
 
 .modal-overlay {
-  animation: fadeIn 200ms ease;
+  animation: fadeIn 180ms ease;
 }
 .modal-panel {
-  animation: scaleIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: scaleIn 180ms ease;
 }
 
 @keyframes fadeIn {
@@ -188,7 +171,7 @@ a.card:hover .icon-chip {
   to { opacity: 1; }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  from { opacity: 0; transform: scale(0.98) translateY(6px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 @keyframes splashScale {
@@ -201,17 +184,17 @@ a.card:hover .icon-chip {
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-page {
-  animation: fadeInUp 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: fadeInUp 220ms ease both;
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: scale(0.92); }
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
 .animate-pop {
-  animation: popIn 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: popIn 200ms ease both;
 }

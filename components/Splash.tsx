@@ -23,11 +23,8 @@ export default function Splash() {
       style={{ opacity: leaving ? 0 : 1 }}
     >
       <div className="animate-splash">
-        <Logo size={120} />
+        <Logo size={160} />
       </div>
-      <p className="text-white font-semibold tracking-wide text-lg">
-        Hospital San Ángel
-      </p>
     </div>
   );
 }

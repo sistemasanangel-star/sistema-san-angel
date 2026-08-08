@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import SignatureCanvas from "@/components/SignatureCanvas";
+import { MapPin, PenLine } from "lucide-react";
 
 type Doctor = { id: string; nombre: string; perteneceA: string };
 
@@ -263,9 +264,9 @@ function NewDoctorVisitModal({
               type="button"
               onClick={captureGps}
               disabled={gpsLoading}
-              className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border btn-outline btn-outline-blue"
             >
-              {gpsLoading ? "Obteniendo..." : "📍 Obtener ubicación GPS *"}
+              <MapPin size={14} /> {gpsLoading ? "Obteniendo..." : "Obtener ubicación GPS *"}
             </button>
             {gps && <span className="badge-ok text-xs px-2 py-1 rounded-full">GPS ✓</span>}
           </div>
@@ -284,9 +285,9 @@ function NewDoctorVisitModal({
             <button
               type="button"
               onClick={() => setShowSignature(true)}
-              className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border btn-outline btn-outline-blue"
             >
-              ✍️ Firma del receptor *
+              <PenLine size={14} /> Firma del receptor *
             </button>
             {firma && <span className="badge-ok text-xs px-2 py-1 rounded-full">Firma ✓</span>}
           </div>

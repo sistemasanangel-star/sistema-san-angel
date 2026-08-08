@@ -2,7 +2,38 @@
 
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
-import { CATEGORIAS_LUGAR, categoriaLabel, categoriaColor, categoriaIcon } from "@/lib/constants";
+import { CATEGORIAS_LUGAR, categoriaLabel, categoriaColor } from "@/lib/constants";
+import {
+  Building2,
+  Stethoscope,
+  HeartPulse,
+  Baby,
+  Pill,
+  FlaskConical,
+  MapPin,
+  MapPinOff,
+  Phone,
+  Clock,
+  Pencil,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react";
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  SANATORIO: Building2,
+  HOSPITAL: Building2,
+  CLINICA_PRIVADA: Stethoscope,
+  CONSULTORIO: Stethoscope,
+  CENTRO_SALUD: HeartPulse,
+  COMADRONA: Baby,
+  FARMACIA: Pill,
+  LABORATORIO: FlaskConical,
+  OTRO: MapPin,
+};
+
+function categoryIcon(value: string): LucideIcon {
+  return CATEGORY_ICONS[value] ?? MapPin;
+}
 
 type Doctor = {
   id: string;
@@ -127,75 +158,96 @@ export default function MedicosClient({ role }: { role: string }) {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {doctors.map((doc) => {
+            const Icon = categoryIcon(doc.categoria);
             const color = categoriaColor(doc.categoria);
             return (
-            <div key={doc.id} className="card card-interactive p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+              <div
+                key={doc.id}
+                className="card card-interactive p-4 sm:p-5 flex flex-col gap-3 min-w-0 relative overflow-hidden"
+              >
+                <span
+                  className="absolute top-0 left-0 right-0 h-1"
+                  style={{ background: color.text }}
+                />
+
+                <div className="flex items-start gap-3 min-w-0">
                   <span
                     className="icon-chip shrink-0"
-                    style={{ background: color.bg, width: "2rem", height: "2rem", fontSize: "1rem" }}
+                    style={{ width: "2.5rem", height: "2.5rem", background: color.bg, color: color.text }}
                   >
-                    {categoriaIcon(doc.categoria)}
+                    <Icon size={19} strokeWidth={1.75} />
                   </span>
-                  <div className="min-w-0">
-                    <p className="font-medium text-brand-black text-sm sm:text-base truncate">{doc.nombre}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-brand-black text-sm sm:text-base truncate">
+                      {doc.nombre}
+                    </p>
                     {doc.especialidad && (
                       <p className="text-xs text-gray-500 truncate">{doc.especialidad}</p>
                     )}
                   </div>
                 </div>
-                <span
-                  className="hidden sm:inline text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap"
-                  style={{ background: color.bg, color: color.text }}
-                >
-                  {categoriaLabel(doc.categoria)}
-                </span>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className="text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap"
+                    style={{ background: color.bg, color: color.text }}
+                  >
+                    {categoriaLabel(doc.categoria)}
+                  </span>
+                  {doc.gpsLat != null ? (
+                    <span className="badge-ok text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <MapPin size={11} /> GPS
+                    </span>
+                  ) : (
+                    <span className="badge-pending text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <MapPinOff size={11} /> Sin GPS
+                    </span>
+                  )}
+                </div>
+
+                <div className="border-t border-gray-100 pt-3 flex flex-col gap-1.5">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate font-medium">
+                    {doc.perteneceA}
+                  </p>
+                  {doc.direccion && (
+                    <p className="text-xs text-gray-500 truncate hidden sm:block">{doc.direccion}</p>
+                  )}
+                  {doc.telefono && (
+                    <p className="text-xs text-gray-500 truncate flex items-center gap-1.5">
+                      <Phone size={12} className="text-gray-400 shrink-0" /> {doc.telefono}
+                    </p>
+                  )}
+                  {doc.horarioAtencion && (
+                    <p className="text-xs text-gray-500 truncate hidden sm:flex items-center gap-1.5">
+                      <Clock size={12} className="text-gray-400 shrink-0" /> {doc.horarioAtencion}
+                    </p>
+                  )}
+                  {doc.notas && (
+                    <p className="text-xs text-gray-400 line-clamp-2 hidden sm:block italic">
+                      {doc.notas}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 pt-1 mt-auto">
+                  <button
+                    onClick={() => {
+                      setEditing(doc);
+                      setShowForm(true);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
+                  >
+                    <Pencil size={13} /> Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(doc)}
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
+                  >
+                    <Trash2 size={13} />
+                    {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
+                  </button>
+                </div>
               </div>
-              <span
-                className="sm:hidden text-xs px-2 py-0.5 rounded-full font-semibold self-start"
-                style={{ background: color.bg, color: color.text }}
-              >
-                {categoriaLabel(doc.categoria)}
-              </span>
-              <p className="text-xs sm:text-sm text-gray-600 truncate">{doc.perteneceA}</p>
-              {doc.direccion && (
-                <p className="text-xs text-gray-500 truncate hidden sm:block">{doc.direccion}</p>
-              )}
-              {doc.telefono && (
-                <p className="text-xs text-gray-500 truncate">📞 {doc.telefono}</p>
-              )}
-              {doc.horarioAtencion && (
-                <p className="text-xs text-gray-500 truncate hidden sm:block">🕐 {doc.horarioAtencion}</p>
-              )}
-              <p className="text-xs">
-                {doc.gpsLat != null ? (
-                  <span className="badge-ok px-2 py-0.5 rounded-full">GPS ✓</span>
-                ) : (
-                  <span className="badge-pending px-2 py-0.5 rounded-full">Sin GPS</span>
-                )}
-              </p>
-              {doc.notas && (
-                <p className="text-xs text-gray-400 line-clamp-2 hidden sm:block">{doc.notas}</p>
-              )}
-              <div className="flex flex-col sm:flex-row gap-2 mt-2">
-                <button
-                  onClick={() => {
-                    setEditing(doc);
-                    setShowForm(true);
-                  }}
-                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-blue"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(doc)}
-                  className="flex-1 text-xs sm:text-sm px-3 py-1.5 rounded-lg border btn-outline btn-outline-red"
-                >
-                  {role === "ADMIN" ? "Eliminar" : "Solicitar borrado"}
-                </button>
-              </div>
-            </div>
             );
           })}
         </div>
@@ -212,7 +264,6 @@ export default function MedicosClient({ role }: { role: string }) {
           }}
         />
       )}
-
     </div>
   );
 }
@@ -396,9 +447,10 @@ function DoctorFormModal({
             type="button"
             onClick={captureGps}
             disabled={gpsLoading}
-            className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border btn-outline btn-outline-blue"
           >
-            {gpsLoading ? "Obteniendo..." : "📍 Obtener ubicación GPS"}
+            <MapPin size={14} />
+            {gpsLoading ? "Obteniendo..." : "Obtener ubicación GPS"}
           </button>
           {gps && (
             <span className="badge-ok text-xs px-2 py-1 rounded-full">
@@ -413,7 +465,7 @@ function DoctorFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-xl border border-gray-300"
+            className="px-4 py-2 text-sm rounded-lg border border-gray-300"
           >
             Cancelar
           </button>

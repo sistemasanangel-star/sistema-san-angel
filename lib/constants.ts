@@ -14,36 +14,20 @@ export function categoriaLabel(value: string) {
   return CATEGORIAS_LUGAR.find((c) => c.value === value)?.label ?? value;
 }
 
-export const CATEGORIA_COLORS: Record<string, { bg: string; text: string }> = {
-  SANATORIO: { bg: "#EAF2FA", text: "#2E6DA4" },
+const CATEGORIA_COLORS: Record<string, { bg: string; text: string }> = {
+  SANATORIO: { bg: "#EAF1F8", text: "#2E6DA4" },
+  HOSPITAL: { bg: "#EAF1F8", text: "#2E6DA4" },
   CLINICA_PRIVADA: { bg: "#F1EBFC", text: "#7C3AED" },
-  HOSPITAL: { bg: "#FCEAEA", text: "#C8443A" },
+  CONSULTORIO: { bg: "#F1EBFC", text: "#7C3AED" },
   CENTRO_SALUD: { bg: "#E7F8F5", text: "#0E9488" },
   COMADRONA: { bg: "#FDECF3", text: "#DB2777" },
   FARMACIA: { bg: "#EAF9F0", text: "#279257" },
   LABORATORIO: { bg: "#FEF3E2", text: "#B45309" },
-  CONSULTORIO: { bg: "#EAF2FA", text: "#2E6DA4" },
   OTRO: { bg: "#F1F2F4", text: "#52585F" },
 };
 
 export function categoriaColor(value: string) {
   return CATEGORIA_COLORS[value] ?? CATEGORIA_COLORS.OTRO;
-}
-
-export const CATEGORIA_ICON: Record<string, string> = {
-  SANATORIO: "🏥",
-  CLINICA_PRIVADA: "🏨",
-  HOSPITAL: "🏥",
-  CENTRO_SALUD: "⛑️",
-  COMADRONA: "🤰",
-  FARMACIA: "💊",
-  LABORATORIO: "🧪",
-  CONSULTORIO: "🩺",
-  OTRO: "📍",
-};
-
-export function categoriaIcon(value: string) {
-  return CATEGORIA_ICON[value] ?? "📍";
 }
 
 export const QUESTION_TYPES = [

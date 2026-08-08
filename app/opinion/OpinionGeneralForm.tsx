@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 export default function OpinionGeneralForm() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -95,24 +96,24 @@ export default function OpinionGeneralForm() {
           <button
             type="button"
             onClick={() => setTipo("POSITIVA")}
-            className={`flex-1 py-2 rounded-xl text-sm border ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm border ${
               tipo === "POSITIVA"
                 ? "bg-brand-green text-white border-brand-green"
                 : "border-gray-300 text-gray-600"
             }`}
           >
-            🙂 Positiva
+            <ThumbsUp size={15} /> Positiva
           </button>
           <button
             type="button"
             onClick={() => setTipo("NEGATIVA")}
-            className={`flex-1 py-2 rounded-xl text-sm border ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm border ${
               tipo === "NEGATIVA"
                 ? "bg-brand-red text-white border-brand-red"
                 : "border-gray-300 text-gray-600"
             }`}
           >
-            🙁 Negativa
+            <ThumbsDown size={15} /> Negativa
           </button>
         </div>
       </div>

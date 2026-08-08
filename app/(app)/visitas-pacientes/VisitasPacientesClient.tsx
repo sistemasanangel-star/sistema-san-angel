@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
+import { MapPin } from "lucide-react";
 
 type Admission = {
   id: string;
@@ -410,9 +411,9 @@ function NewVisitModal({
           <button
             type="button"
             onClick={captureGps}
-            className="px-3 py-2 text-sm rounded-xl border btn-outline btn-outline-blue"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border btn-outline btn-outline-blue"
           >
-            📍 Obtener ubicación GPS
+            <MapPin size={14} /> Obtener ubicación GPS
           </button>
           {gps && <span className="badge-ok text-xs px-2 py-1 rounded-full">GPS ✓</span>}
         </div>
